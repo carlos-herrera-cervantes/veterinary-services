@@ -30,3 +30,11 @@
 *.exe
 *.out
 *.app
+appsettings.*
+.env
+.idea
+.vscode
+obj
+Properties
+bin
+.vs
