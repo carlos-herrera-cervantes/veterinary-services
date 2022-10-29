@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Calculators\" />
+    <Folder Include="Pagers\" />
+    <Folder Include="Types\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Types\Pager.fs" />
+    <Compile Include="Calculators\ITotalCalculator.fs" />
+    <Compile Include="Calculators\ClassicCalculator.fs" />
+    <Compile Include="Calculators\IStrategyManager.fs" />
+    <Compile Include="Calculators\StrategyManager.fs" />
+    <Compile Include="Pagers\IPageable.fs" />
+    <Compile Include="Pagers\Pageable.fs" />
+    <Compile Include="Pagers\IPagerStrategyManager.fs" />
+    <Compile Include="Pagers\PagerStrategyManager.fs" />
+    <PackageReference Include="MongoDB.Driver" Version="2.18.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VeterinaryServices.Repository\VeterinaryServices.Repository.fsproj" />
+    <ProjectReference Include="..\VeterinaryServices.Domain\VeterinaryServices.Domain.fsproj" />
+  </ItemGroup>
+</Project>
