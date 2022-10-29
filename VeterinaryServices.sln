@@ -5,6 +5,14 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "VeterinaryServices.Web", "VeterinaryServices.Web\VeterinaryServices.Web.fsproj", "{4FB288C6-9554-4237-82BA-928D4BBA13A0}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "VeterinaryServices.Repository", "VeterinaryServices.Repository\VeterinaryServices.Repository.fsproj", "{CB8781EF-3E3C-4706-938D-2D142BE551BB}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "VeterinaryServices.Domain", "VeterinaryServices.Domain\VeterinaryServices.Domain.fsproj", "{6F0F2EF3-6ECA-4971-8091-88C2A35C714C}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "VeterinaryServices.Services", "VeterinaryServices.Services\VeterinaryServices.Services.fsproj", "{A1DAD06F-D6AA-412D-B791-93DB18C9F926}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "VeterinaryServices.Tests", "VeterinaryServices.Tests\VeterinaryServices.Tests.fsproj", "{2FD053F3-938A-489E-9087-91E1FFDF5BC3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +26,25 @@ Global
 		{4FB288C6-9554-4237-82BA-928D4BBA13A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FB288C6-9554-4237-82BA-928D4BBA13A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4FB288C6-9554-4237-82BA-928D4BBA13A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC250A03-0077-4BB7-A901-73FD6161C856}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC250A03-0077-4BB7-A901-73FD6161C856}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC250A03-0077-4BB7-A901-73FD6161C856}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC250A03-0077-4BB7-A901-73FD6161C856}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB8781EF-3E3C-4706-938D-2D142BE551BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB8781EF-3E3C-4706-938D-2D142BE551BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB8781EF-3E3C-4706-938D-2D142BE551BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB8781EF-3E3C-4706-938D-2D142BE551BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F0F2EF3-6ECA-4971-8091-88C2A35C714C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F0F2EF3-6ECA-4971-8091-88C2A35C714C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F0F2EF3-6ECA-4971-8091-88C2A35C714C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F0F2EF3-6ECA-4971-8091-88C2A35C714C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1DAD06F-D6AA-412D-B791-93DB18C9F926}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1DAD06F-D6AA-412D-B791-93DB18C9F926}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1DAD06F-D6AA-412D-B791-93DB18C9F926}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1DAD06F-D6AA-412D-B791-93DB18C9F926}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FD053F3-938A-489E-9087-91E1FFDF5BC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FD053F3-938A-489E-9087-91E1FFDF5BC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FD053F3-938A-489E-9087-91E1FFDF5BC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FD053F3-938A-489E-9087-91E1FFDF5BC3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="2.18.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\BaseSchema.fs" />
+    <Compile Include="Models\ServiceCatalog.fs" />
+    <Compile Include="Models\Service.fs" />
+    <Compile Include="Models\UserService.fs" />
+    <Compile Include="Models\Pet.fs" />
+    <Compile Include="Models\Customer.fs" />
+    <Compile Include="Models\Employee.fs" />
+  </ItemGroup>
+</Project>

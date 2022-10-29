@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Repositories\" />
+    <Folder Include="Managers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Repositories\IUserServiceRepository.fs" />
+    <Compile Include="Repositories\UserServiceRepository.fs" />
+    <Compile Include="Repositories\IServiceCatalogRepository.fs" />
+    <Compile Include="Repositories\ServiceCatalogRepository.fs" />
+    <Compile Include="Repositories\IServiceRepository.fs" />
+    <Compile Include="Repositories\ServiceRepository.fs" />
+    <Compile Include="Repositories\IPetRepository.fs" />
+    <Compile Include="Repositories\PetRepository.fs" />
+    <Compile Include="Repositories\ICustomerRepository.fs" />
+    <Compile Include="Repositories\CustomerRepository.fs" />
+    <Compile Include="Repositories\IEmployeeRepository.fs" />
+    <Compile Include="Repositories\EmployeeRepository.fs" />
+    <Compile Include="Managers\IUserServiceManager.fs" />
+    <Compile Include="Managers\UserServiceManager.fs" />
+    <Compile Include="Managers\IServiceCatalogManager.fs" />
+    <Compile Include="Managers\ServiceCatalogManager.fs" />
+    <Compile Include="Managers\IServiceManager.fs" />
+    <Compile Include="Managers\ServiceManager.fs" />
+    <PackageReference Include="MongoDB.Driver" Version="2.18.0" />
+    <ProjectReference Include="..\VeterinaryServices.Domain\VeterinaryServices.Domain.fsproj" />
+  </ItemGroup>
+</Project>

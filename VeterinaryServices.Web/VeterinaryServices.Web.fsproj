@@ -5,11 +5,31 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Controllers\CatalogController.fs" />
-    <Compile Include="Program.fs" />
+    <Folder Include="Attributes\" />
+    <Folder Include="Controllers\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="Types\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <Compile Include="Types\Pager.fs" />
+    <Compile Include="Types\AutoMapping.fs" />
+    <Compile Include="Types\ServiceTotal.fs" />
+    <Compile Include="Attributes\CustomerExistAttribute.fs" />
+    <Compile Include="Attributes\PetExistAttribute.fs" />
+    <Compile Include="Attributes\EmployeeExistAttribute.fs" />
+    <Compile Include="Attributes\ServiceExistAttribute.fs" />
+    <Compile Include="Controllers\ServiceCatalogController.fs" />
+    <Compile Include="Controllers\UserServiceController.fs" />
+    <Compile Include="Controllers\ServiceController.fs" />
+    <Compile Include="Extensions\MongoDbExtensions.fs" />
+    <Compile Include="Extensions\AutoMapperExtensions.fs" />
+    <Compile Include="Program.fs" />
+    <ProjectReference Include="..\VeterinaryServices.Domain\VeterinaryServices.Domain.fsproj" />
+    <ProjectReference Include="..\VeterinaryServices.Repository\VeterinaryServices.Repository.fsproj" />
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.10" />
+    <PackageReference Include="MongoDB.Driver" Version="2.18.0" />
+    <ProjectReference Include="..\VeterinaryServices.Services\VeterinaryServices.Services.fsproj" />
   </ItemGroup>
 </Project>
