@@ -8,8 +8,9 @@ open VeterinaryServices.Repository.Repositories
 open VeterinaryServices.Services.Calculators
 open VeterinaryServices.Services.Pagers
 open VeterinaryServices.Web.Types
-open VeterinaryServices.Domain.Models
 open VeterinaryServices.Web.Attributes
+open VeterinaryServices.Domain.Models
+open VeterinaryServices.Domain.Constants
 
 [<Route("api/services/v1/customers")>]
 [<Produces("application/json")>]
@@ -138,6 +139,39 @@ type UserServiceController
             return this.Created("", userService) :> IActionResult
         }
 
+    [<HttpPut("me/{id}")>]
+    [<ServiceExistFromPatch>]
+    member this.UpdateByIdAsync
+        (
+            [<FromHeader(Name = "user-id")>] userId: string,
+            [<FromRoute>] id: string,
+            [<FromBody>] patchUserService: PatchUserService
+        ) =
+        async {
+            let serviceIdMatch = Builders<UserService>.Filter.Eq((fun us -> us.Id), id)
+            let userIdMatch = Builders<UserService>.Filter.Eq((fun us -> us.CustomerId), userId)
+            let userServiceFilter = Builders<UserService>.Filter.And(serviceIdMatch, userIdMatch)
+
+            let! userService = this._userServiceRepository.GetOneAsync userServiceFilter |> Async.AwaitTask
+
+            match userService with
+            | null ->
+                let userServiceNotFoundMessage = {| message = "User service not found" |}
+                return NotFoundObjectResult(userServiceNotFoundMessage) :> IActionResult
+            | _ ->
+                match userService.Status with
+                | UserServiceStatus.Canceled ->
+                    let serviceAlreadyCanceledMessage = {| message = "The user service is already canceled" |}
+                    return ConflictObjectResult(serviceAlreadyCanceledMessage) :> IActionResult
+                | UserServiceStatus.Charged ->
+                    let serviceChargedMessage = {| message = "The user service is already charged" |}
+                    return ConflictObjectResult(serviceChargedMessage) :> IActionResult
+                | _ ->
+                    userService.Services <- patchUserService.Services
+                    do! this._userServiceManager.UpdateAsync(userServiceFilter, userService) |> Async.AwaitTask
+                    return this.Ok userService :> IActionResult
+        }
+
     [<HttpPut("{id}/employee")>]
     [<EmployeeExist>]
     member this.AssignEmployeeAsync([<FromRoute>] id: string, [<FromBody>] userService: UserService) =
@@ -152,4 +186,30 @@ type UserServiceController
             | _ ->
                 do! this._userServiceManager.UpdateAsync(filter, userService) |> Async.AwaitTask
                 return this.Ok userService :> IActionResult
+        }
+
+    [<HttpPut("me/{id}/cancel")>]
+    member this.CancelAsync([<FromHeader(Name = "user-id")>] userId: string, [<FromRoute>] id: string) =
+        async {
+            let serviceIdMatch = Builders<UserService>.Filter.Eq((fun us -> us.Id), id)
+            let userIdMatch = Builders<UserService>.Filter.Eq((fun us -> us.CustomerId), userId)
+            let userServiceFilter = Builders<UserService>.Filter.And(serviceIdMatch, userIdMatch)
+            let! userService = this._userServiceRepository.GetOneAsync userServiceFilter |> Async.AwaitTask
+
+            match userService with
+            | null ->
+                let userServiceNotFoundMessage = {| message = "User service not found" |}
+                return NotFoundObjectResult(userServiceNotFoundMessage) :> IActionResult
+            | _ ->
+                match userService.Status with
+                | UserServiceStatus.Canceled ->
+                    let serviceAlreadyCanceledMessage = {| message = "The user service is already canceled" |}
+                    return ConflictObjectResult(serviceAlreadyCanceledMessage) :> IActionResult
+                | UserServiceStatus.Charged ->
+                    let serviceChargedMessage = {| message = "The user service is already charged" |}
+                    return ConflictObjectResult(serviceChargedMessage) :> IActionResult
+                | _ ->
+                    userService.Status <- UserServiceStatus.Canceled
+                    do! this._userServiceManager.UpdateAsync(userServiceFilter, userService) |> Async.AwaitTask
+                    return this.Ok userService :> IActionResult
         }

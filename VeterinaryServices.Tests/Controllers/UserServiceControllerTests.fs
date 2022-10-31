@@ -15,6 +15,7 @@ open VeterinaryServices.Services.Calculators
 open VeterinaryServices.Services.Pagers
 open VeterinaryServices.Services.Types
 open VeterinaryServices.Domain.Models
+open VeterinaryServices.Domain.Constants
 
 [<Collection("UserServiceController")>]
 type UserServiceControllerTests() =
@@ -467,6 +468,329 @@ type UserServiceControllerTests() =
 
             mockUserServiceRepository
                 .Verify((fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<UserService>>())), Times.Once)
+
+            Assert.IsType<OkObjectResult>(response) |> ignore
+        }
+
+    [<Fact(DisplayName = "Should return 404 when user service does not exist")>]
+    member this.UpdateByIdAsyncShouldReturn404() =
+        async {
+            let mockUserServiceManager = Mock<IUserServiceManager>()
+            let mockUserServiceRepository = Mock<IUserServiceRepository>()
+            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
+            let mockServiceRepository = Mock<IServiceRepository>()
+            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
+            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockMapper = Mock<IMapper>()
+
+            mockUserServiceRepository
+                .Setup(fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<UserService>>()))
+                .ReturnsAsync(fun () -> null) |> ignore
+
+            let userServiceController =
+                UserServiceController(
+                    mockUserServiceManager.Object,
+                    mockUserServiceRepository.Object,
+                    mockServiceCatalogRepository.Object,
+                    mockServiceRepository.Object,
+                    mockTotalCalulatorStrategyManager.Object,
+                    mockPagerStrategyManager.Object,
+                    mockMapper.Object
+                )
+
+            let! response =
+                userServiceController.UpdateByIdAsync(
+                    "dummy-user-id",
+                    "dummy-service-id",PatchUserService()
+                )
+
+            mockUserServiceRepository
+                .Verify((fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<UserService>>())), Times.Once)
+
+            Assert.IsType<NotFoundObjectResult>(response) |> ignore
+        }
+
+    [<Fact(DisplayName = "Should return 409 when user service has the canceled status")>]
+    member this.UpdateByIdAsyncShouldReturn409ByCanceledStatus() =
+        async {
+            let mockUserServiceManager = Mock<IUserServiceManager>()
+            let mockUserServiceRepository = Mock<IUserServiceRepository>()
+            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
+            let mockServiceRepository = Mock<IServiceRepository>()
+            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
+            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockMapper = Mock<IMapper>()
+
+            let dummyUserService = UserService()
+            dummyUserService.Status <- UserServiceStatus.Canceled
+
+            mockUserServiceRepository
+                .Setup(fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<UserService>>()))
+                .ReturnsAsync(dummyUserService) |> ignore
+
+            let userServiceController =
+                UserServiceController(
+                    mockUserServiceManager.Object,
+                    mockUserServiceRepository.Object,
+                    mockServiceCatalogRepository.Object,
+                    mockServiceRepository.Object,
+                    mockTotalCalulatorStrategyManager.Object,
+                    mockPagerStrategyManager.Object,
+                    mockMapper.Object
+                )
+
+            let! response =
+                userServiceController.UpdateByIdAsync(
+                    "dummy-user-id",
+                    "dummy-service-id",PatchUserService()
+                )
+
+            mockUserServiceRepository
+                .Verify((fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<UserService>>())), Times.Once)
+
+            Assert.IsType<ConflictObjectResult>(response) |> ignore
+        }
+
+    [<Fact(DisplayName = "Should return 409 when user service has the charged status")>]
+    member this.UpdateByIdAsyncShouldReturn409ByChargedStatus() =
+        async {
+            let mockUserServiceManager = Mock<IUserServiceManager>()
+            let mockUserServiceRepository = Mock<IUserServiceRepository>()
+            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
+            let mockServiceRepository = Mock<IServiceRepository>()
+            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
+            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockMapper = Mock<IMapper>()
+
+            let dummyUserService = UserService()
+            dummyUserService.Status <- UserServiceStatus.Charged
+
+            mockUserServiceRepository
+                .Setup(fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<UserService>>()))
+                .ReturnsAsync(dummyUserService) |> ignore
+
+            let userServiceController =
+                UserServiceController(
+                    mockUserServiceManager.Object,
+                    mockUserServiceRepository.Object,
+                    mockServiceCatalogRepository.Object,
+                    mockServiceRepository.Object,
+                    mockTotalCalulatorStrategyManager.Object,
+                    mockPagerStrategyManager.Object,
+                    mockMapper.Object
+                )
+
+            let! response =
+                userServiceController.UpdateByIdAsync(
+                    "dummy-user-id",
+                    "dummy-service-id",PatchUserService()
+                )
+
+            mockUserServiceRepository
+                .Verify((fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<UserService>>())), Times.Once)
+
+            Assert.IsType<ConflictObjectResult>(response) |> ignore
+        }
+
+    [<Fact(DisplayName = "Should return 200 when user service is updated successfully")>]
+    member this.UpdateByIdAsyncShouldRetur200() =
+        async {
+            let mockUserServiceManager = Mock<IUserServiceManager>()
+            let mockUserServiceRepository = Mock<IUserServiceRepository>()
+            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
+            let mockServiceRepository = Mock<IServiceRepository>()
+            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
+            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockMapper = Mock<IMapper>()
+
+            let dummyUserService = UserService()
+            dummyUserService.Status <- UserServiceStatus.Created
+
+            mockUserServiceRepository
+                .Setup(fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<UserService>>()))
+                .ReturnsAsync(dummyUserService) |> ignore
+            mockUserServiceManager
+                .Setup(fun x -> x.UpdateAsync(It.IsAny<FilterDefinition<UserService>>(), It.IsAny<UserService>()))
+                .Returns(Task.CompletedTask) |> ignore
+
+            let userServiceController =
+                UserServiceController(
+                    mockUserServiceManager.Object,
+                    mockUserServiceRepository.Object,
+                    mockServiceCatalogRepository.Object,
+                    mockServiceRepository.Object,
+                    mockTotalCalulatorStrategyManager.Object,
+                    mockPagerStrategyManager.Object,
+                    mockMapper.Object
+                )
+
+            let! response =
+                userServiceController.UpdateByIdAsync(
+                    "dummy-user-id",
+                    "dummy-service-id",PatchUserService()
+                )
+
+            mockUserServiceRepository
+                .Verify((fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<UserService>>())), Times.Once)
+            mockUserServiceManager
+                .Verify((fun x ->
+                    x.UpdateAsync(
+                        It.IsAny<FilterDefinition<UserService>>(),
+                        It.IsAny<UserService>())), Times.Once)
+
+            Assert.IsType<OkObjectResult>(response) |> ignore
+        }
+
+
+    [<Fact(DisplayName = "Should return 404 when user service does not exist")>]
+    member this.CancelAsyncShouldReturn404() =
+        async {
+            let mockUserServiceManager = Mock<IUserServiceManager>()
+            let mockUserServiceRepository = Mock<IUserServiceRepository>()
+            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
+            let mockServiceRepository = Mock<IServiceRepository>()
+            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
+            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockMapper = Mock<IMapper>()
+
+            mockUserServiceRepository
+                .Setup(fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<UserService>>()))
+                .ReturnsAsync(fun () -> null) |> ignore
+
+            let userServiceController =
+                UserServiceController(
+                    mockUserServiceManager.Object,
+                    mockUserServiceRepository.Object,
+                    mockServiceCatalogRepository.Object,
+                    mockServiceRepository.Object,
+                    mockTotalCalulatorStrategyManager.Object,
+                    mockPagerStrategyManager.Object,
+                    mockMapper.Object
+                )
+
+            let! response = userServiceController.CancelAsync("dummy-user-id", "dummy-service-id")
+
+            mockUserServiceRepository
+                .Verify((fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<UserService>>())), Times.Once)
+
+            Assert.IsType<NotFoundObjectResult>(response) |> ignore
+        }
+
+    [<Fact(DisplayName = "Should return 409 when user service has the canceled status")>]
+    member this.CancelAsyncShouldReturn409ByCanceledStatus() =
+        async {
+            let mockUserServiceManager = Mock<IUserServiceManager>()
+            let mockUserServiceRepository = Mock<IUserServiceRepository>()
+            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
+            let mockServiceRepository = Mock<IServiceRepository>()
+            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
+            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockMapper = Mock<IMapper>()
+
+            let dummyUserService = UserService()
+            dummyUserService.Status <- UserServiceStatus.Canceled
+
+            mockUserServiceRepository
+                .Setup(fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<UserService>>()))
+                .ReturnsAsync(dummyUserService) |> ignore
+
+            let userServiceController =
+                UserServiceController(
+                    mockUserServiceManager.Object,
+                    mockUserServiceRepository.Object,
+                    mockServiceCatalogRepository.Object,
+                    mockServiceRepository.Object,
+                    mockTotalCalulatorStrategyManager.Object,
+                    mockPagerStrategyManager.Object,
+                    mockMapper.Object
+                )
+
+            let! response = userServiceController.CancelAsync("dummy-user-id", "dummy-service-id")
+
+            mockUserServiceRepository
+                .Verify((fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<UserService>>())), Times.Once)
+
+            Assert.IsType<ConflictObjectResult>(response) |> ignore
+        }
+
+    [<Fact(DisplayName = "Should return 409 when user service has the charged status")>]
+    member this.CancelAsyncShouldReturn409ByChargedStatus() =
+        async {
+            let mockUserServiceManager = Mock<IUserServiceManager>()
+            let mockUserServiceRepository = Mock<IUserServiceRepository>()
+            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
+            let mockServiceRepository = Mock<IServiceRepository>()
+            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
+            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockMapper = Mock<IMapper>()
+
+            let dummyUserService = UserService()
+            dummyUserService.Status <- UserServiceStatus.Charged
+
+            mockUserServiceRepository
+                .Setup(fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<UserService>>()))
+                .ReturnsAsync(dummyUserService) |> ignore
+
+            let userServiceController =
+                UserServiceController(
+                    mockUserServiceManager.Object,
+                    mockUserServiceRepository.Object,
+                    mockServiceCatalogRepository.Object,
+                    mockServiceRepository.Object,
+                    mockTotalCalulatorStrategyManager.Object,
+                    mockPagerStrategyManager.Object,
+                    mockMapper.Object
+                )
+
+            let! response = userServiceController.CancelAsync("dummy-user-id", "dummy-service-id")
+
+            mockUserServiceRepository
+                .Verify((fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<UserService>>())), Times.Once)
+
+            Assert.IsType<ConflictObjectResult>(response) |> ignore
+        }
+
+    [<Fact(DisplayName = "Should return 200 when user service is canceled successfully")>]
+    member this.CancelAsyncShouldReturn200() =
+        async {
+            let mockUserServiceManager = Mock<IUserServiceManager>()
+            let mockUserServiceRepository = Mock<IUserServiceRepository>()
+            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
+            let mockServiceRepository = Mock<IServiceRepository>()
+            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
+            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockMapper = Mock<IMapper>()
+
+            let dummyUserService = UserService()
+            dummyUserService.Status <- UserServiceStatus.Created
+
+            mockUserServiceRepository
+                .Setup(fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<UserService>>()))
+                .ReturnsAsync(dummyUserService) |> ignore
+            mockUserServiceManager
+                .Setup(fun x -> x.UpdateAsync(It.IsAny<FilterDefinition<UserService>>(), It.IsAny<UserService>()))
+                .Returns(Task.CompletedTask) |> ignore
+
+            let userServiceController =
+                UserServiceController(
+                    mockUserServiceManager.Object,
+                    mockUserServiceRepository.Object,
+                    mockServiceCatalogRepository.Object,
+                    mockServiceRepository.Object,
+                    mockTotalCalulatorStrategyManager.Object,
+                    mockPagerStrategyManager.Object,
+                    mockMapper.Object
+                )
+
+            let! response = userServiceController.CancelAsync("dummy-user-id", "dummy-service-id")
+
+            mockUserServiceRepository
+                .Verify((fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<UserService>>())), Times.Once)
+            mockUserServiceManager
+                .Verify((fun x ->
+                    x.UpdateAsync(
+                        It.IsAny<FilterDefinition<UserService>>(),
+                        It.IsAny<UserService>())), Times.Once)
 
             Assert.IsType<OkObjectResult>(response) |> ignore
         }
