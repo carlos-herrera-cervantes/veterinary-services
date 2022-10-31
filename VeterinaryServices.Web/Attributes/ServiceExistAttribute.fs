@@ -28,3 +28,26 @@ type ServiceExistFilter(serviceRepository: IServiceRepository) =
 
 type ServiceExistAttribute() =
     inherit TypeFilterAttribute(typeof<ServiceExistFilter>)
+
+
+type ServiceExistFromPatchFilter(serviceRepository: IServiceRepository) =
+
+    member private this._serviceRepository = serviceRepository
+
+    interface IAsyncActionFilter with
+
+        member this.OnActionExecutionAsync(context: ActionExecutingContext, next: ActionExecutionDelegate) =
+            async {
+                let patchUserService = context.ActionArguments.["patchUserService"] :?> PatchUserService
+                let filter = Builders<Service>.Filter.In((fun e -> e.Id), patchUserService.Services)
+                let! counter = this._serviceRepository.CountAsync filter |> Async.AwaitTask
+
+                if counter <> int64(patchUserService.Services.Length) then
+                    let serviceNotFound = {| message = "Service not found" |}
+                    context.Result <- NotFoundObjectResult(serviceNotFound)
+                else
+                    do! next.Invoke() :> Task |> Async.AwaitTask
+            } |> Async.StartAsTask :> Task
+
+type ServiceExistFromPatchAttribute() =
+    inherit TypeFilterAttribute(typeof<ServiceExistFromPatchFilter>)

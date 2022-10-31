@@ -4,6 +4,7 @@ open System.ComponentModel.DataAnnotations
 open MongoDB.Bson.Serialization.Attributes
 open MongoDB.Bson
 open Newtonsoft.Json
+open VeterinaryServices.Domain.Constants
 
 [<AllowNullLiteral>]
 type EmployeeDetail() =
@@ -54,6 +55,10 @@ type UserService() =
     [<Range(1, 1000000, ErrorMessage = "Total cost should be greater than 0")>]
     member val TotalCost: decimal = 0M with get, set
 
+    [<JsonProperty("status")>]
+    [<BsonElement("status")>]
+    member val Status: UserServiceStatus = UserServiceStatus.Created with get, set
+
 type ServiceDetail() =
 
     [<JsonProperty("name")>]
@@ -86,3 +91,14 @@ type UserServiceDetail() =
 
     [<JsonProperty("total_cost")>]
     member val TotalCost: decimal = 0M with get, set
+
+    [<JsonProperty("status")>]
+    member val Status: UserServiceStatus = UserServiceStatus.Created with get, set
+
+[<AllowNullLiteral>]
+type PatchUserService() =
+
+    [<JsonProperty("services")>]
+    [<Required(ErrorMessage = "Services is required")>]
+    [<MinLength(1, ErrorMessage = "At least 1 servie should be defined")>]
+    member val Services: string array = [||] with get, set

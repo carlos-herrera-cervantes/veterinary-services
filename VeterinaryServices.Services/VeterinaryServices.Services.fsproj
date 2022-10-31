@@ -22,8 +22,6 @@
     <Compile Include="Pagers\PagerStrategyManager.fs" />
     <PackageReference Include="MongoDB.Driver" Version="2.18.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\VeterinaryServices.Repository\VeterinaryServices.Repository.fsproj" />
     <ProjectReference Include="..\VeterinaryServices.Domain\VeterinaryServices.Domain.fsproj" />
   </ItemGroup>
