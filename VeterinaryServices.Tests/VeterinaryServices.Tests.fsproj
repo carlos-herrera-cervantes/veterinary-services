@@ -8,6 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Controllers\" />
+    <Folder Include="Services\" />
+    <Folder Include="Services\Calculators\" />
+    <Folder Include="Services\Pagers\" />
+    <Folder Include="Repository\" />
+    <Folder Include="Repository\Repositories\" />
+    <Folder Include="Repository\Managers\" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Include="Controllers\ServiceCatalogControllerTests.fs" />
     <Compile Include="Controllers\UserServiceControllerTests.fs" />
     <Compile Include="Controllers\ServiceControllerTests.fs" />
@@ -15,35 +25,31 @@
     <Compile Include="Services\Calculators\StrategyManagerTests.fs" />
     <Compile Include="Services\Pagers\PageableTests.fs" />
     <Compile Include="Services\Pagers\PagerStrategyManagerTests.fs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="10.1.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
-    <PackageReference Include="MongoDB.Driver" Version="2.18.0" />
-    <PackageReference Include="Moq" Version="4.18.2" />
-    <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    <Compile Include="Repository\Repositories\UserServiceRepositoryTests.fs" />
+    <Compile Include="Repository\Repositories\ServiceCatalogRepositoryTests.fs" />
+    <Compile Include="Repository\Repositories\ServiceRepositoryTests.fs" />
+    <Compile Include="Repository\Repositories\PetRepositoryTests.fs" />
+    <Compile Include="Repository\Repositories\CustomerRepositoryTests.fs" />
+    <Compile Include="Repository\Repositories\EmployeeRepositoryTests.fs" />
+    <Compile Include="Repository\Managers\UserServiceManagerTests.fs" />
+    <Compile Include="Repository\Managers\ServiceCatalogManagerTests.fs" />
+    <Compile Include="Repository\Managers\ServiceManagerTests.fs" />
     <PackageReference Include="coverlet.collector" Version="3.1.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-    <Folder Include="Services\" />
-    <Folder Include="Services\Calculators\" />
-    <Folder Include="Services\Pagers\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\VeterinaryServices.Web\VeterinaryServices.Web.fsproj" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <ProjectReference Include="..\VeterinaryServices.Services\VeterinaryServices.Services.fsproj" />
-    <ProjectReference Include="..\VeterinaryServices.Repository\VeterinaryServices.Repository.fsproj" />
+    <PackageReference Include="Moq" Version="4.18.2" />
     <ProjectReference Include="..\VeterinaryServices.Domain\VeterinaryServices.Domain.fsproj" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <ProjectReference Include="..\VeterinaryServices.Web\VeterinaryServices.Web.fsproj" />
+    <PackageReference Include="MongoDB.Driver" Version="2.18.0" />
+    <ProjectReference Include="..\VeterinaryServices.Repository\VeterinaryServices.Repository.fsproj" />
   </ItemGroup>
 </Project>
