@@ -19,3 +19,7 @@ type UserServiceManager(client: IMongoClient) =
             userService.UpdatedAt <- DateTime.UtcNow
             this._collection.ReplaceOneAsync(filter, userService) |> ignore
             Task.CompletedTask
+
+        member this.DeleteManyAsync(filter: FilterDefinition<UserService>) =
+            this._collection.DeleteManyAsync(filter) |> ignore
+            Task.CompletedTask

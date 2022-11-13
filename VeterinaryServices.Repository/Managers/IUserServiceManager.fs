@@ -8,3 +8,4 @@ open VeterinaryServices.Domain.Models
 type IUserServiceManager =
     abstract member CreateAsync: UserService -> Task
     abstract member UpdateAsync: FilterDefinition<UserService> * UserService -> Task
+    abstract member DeleteManyAsync: FilterDefinition<UserService> -> Task
