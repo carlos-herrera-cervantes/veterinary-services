@@ -9,9 +9,11 @@
     <Folder Include="Controllers\" />
     <Folder Include="Extensions\" />
     <Folder Include="Types\" />
+    <Folder Include="Config\" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="Config\ApiConfig.fs" />
     <Compile Include="Types\Pager.fs" />
     <Compile Include="Types\AutoMapping.fs" />
     <Compile Include="Types\ServiceTotal.fs" />
