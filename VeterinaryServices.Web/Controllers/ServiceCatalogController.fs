@@ -7,8 +7,9 @@ open VeterinaryServices.Repository.Repositories
 open VeterinaryServices.Domain.Models
 open VeterinaryServices.Web.Types
 open VeterinaryServices.Services.Pagers
+open VeterinaryServices.Web.Config
 
-[<Route("api/services/v1/catalog")>]
+[<Route(ApiConfig.BasePath + "/v1/catalog")>]
 [<Produces("application/json")>]
 [<Consumes("application/json")>]
 [<ApiController>]

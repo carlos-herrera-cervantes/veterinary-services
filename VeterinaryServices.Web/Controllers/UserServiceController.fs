@@ -11,8 +11,9 @@ open VeterinaryServices.Web.Types
 open VeterinaryServices.Web.Attributes
 open VeterinaryServices.Domain.Models
 open VeterinaryServices.Domain.Constants
+open VeterinaryServices.Web.Config
 
-[<Route("api/services/v1/customers")>]
+[<Route(ApiConfig.BasePath + "/v1/customers")>]
 [<Produces("application/json")>]
 [<Consumes("application/json")>]
 [<ApiController>]

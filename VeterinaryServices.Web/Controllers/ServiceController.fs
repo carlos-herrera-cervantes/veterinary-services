@@ -8,8 +8,9 @@ open VeterinaryServices.Repository.Managers
 open VeterinaryServices.Services.Calculators
 open VeterinaryServices.Services.Pagers
 open VeterinaryServices.Web.Types
+open VeterinaryServices.Web.Config
 
-[<Route("api/services/v1/costs")>]
+[<Route(ApiConfig.BasePath + "/v1/costs")>]
 [<Produces("application/json")>]
 [<Consumes("application/json")>]
 [<ApiController>]
