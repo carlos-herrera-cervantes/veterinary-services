@@ -7,7 +7,7 @@ open VeterinaryServices.Services.Pagers
 type PageableTests() =
 
     [<Fact(DisplayName = "Should return the correct pages")>]
-    member this.GetPagesShouldReturnPages() =
+    member __.GetPagesShouldReturnPages(): unit =
         let docs = [|"carlos"; "isela"|]
         let totalDocs = int64(2)
         let page = 0

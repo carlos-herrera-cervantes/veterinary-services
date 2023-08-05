@@ -7,14 +7,12 @@ open VeterinaryServices.Domain.Models
 
 type ClassicCalculator(serviceRepository: IServiceRepository) =
 
-    member private this._serviceRepository = serviceRepository
-
     interface ITotalCalculator with
 
-        member this.CalculateTotalAsync(serviceIds: string array) =
+        member __.CalculateTotalAsync(serviceIds: array<string>): Async<decimal> =
             async {
                 let filter = Builders<Service>.Filter.In((fun s -> s.Id), serviceIds)
-                let! services = this._serviceRepository.GetAllAsync(filter, 0, 100)
+                let! services = serviceRepository.GetAllAsync(filter, 0, 100)
 
                 if services.Count = 0 then
                     return 0M

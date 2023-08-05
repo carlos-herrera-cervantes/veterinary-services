@@ -18,11 +18,11 @@ open VeterinaryServices.Domain.Models
 type ServiceCatalogControllerTests() =
 
     [<Fact(DisplayName = "Should return 200 status code listing catalogs")>]
-    member this.GetAllAsyncShouldReturn200() =
+    member __.GetAllAsyncShouldReturn200(): Async<unit> =
         async {
             let mockServiceCatalogManager = Mock<IServiceCatalogManager>()
             let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<ServiceCatalog>>()
+            let mockPagerStrategyManager = Mock<IPageable<ServiceCatalog>>()
 
             mockServiceCatalogRepository
                 .Setup(fun x -> x.CountAsync(It.IsAny<FilterDefinition<ServiceCatalog>>()))
@@ -39,8 +39,7 @@ type ServiceCatalogControllerTests() =
                 }) |> ignore
             mockPagerStrategyManager
                 .Setup(fun x ->
-                    x.GetPager(
-                        It.IsAny<string>(),
+                    x.GetPages(
                         It.IsAny<IEnumerable<ServiceCatalog>>(),
                         It.IsAny<int64>(),
                         It.IsAny<int>(),
@@ -66,8 +65,7 @@ type ServiceCatalogControllerTests() =
                         It.IsAny<int>())), Times.Once)
             mockPagerStrategyManager
                 .Verify((fun x ->
-                    x.GetPager(
-                        It.IsAny<string>(),
+                    x.GetPages(
                         It.IsAny<IEnumerable<ServiceCatalog>>(),
                         It.IsAny<int64>(),
                         It.IsAny<int>(),
@@ -77,11 +75,11 @@ type ServiceCatalogControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 404 when catalog does not exist")>]
-    member this.GetByIdAsyncShouldReturn404() =
+    member __.GetByIdAsyncShouldReturn404(): Async<unit> =
         async {
             let mockServiceCatalogManager = Mock<IServiceCatalogManager>()
             let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<ServiceCatalog>>()
+            let mockPagerStrategyManager = Mock<IPageable<ServiceCatalog>>()
 
             mockServiceCatalogRepository
                 .Setup(fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<ServiceCatalog>>()))
@@ -102,11 +100,11 @@ type ServiceCatalogControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 200 when catalog exists")>]
-    member this.GetByIdAsyncShouldReturn200() =
+    member __.GetByIdAsyncShouldReturn200(): Async<unit> =
         async {
             let mockServiceCatalogManager = Mock<IServiceCatalogManager>()
             let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<ServiceCatalog>>()
+            let mockPagerStrategyManager = Mock<IPageable<ServiceCatalog>>()
 
             mockServiceCatalogRepository
                 .Setup(fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<ServiceCatalog>>()))
@@ -127,11 +125,11 @@ type ServiceCatalogControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 201 when catalog is created")>]
-    member this.CreateAsyncShouldReturn201() =
+    member __.CreateAsyncShouldReturn201(): Async<unit> =
         async {
             let mockServiceCatalogManager = Mock<IServiceCatalogManager>()
             let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<ServiceCatalog>>()
+            let mockPagerStrategyManager = Mock<IPageable<ServiceCatalog>>()
 
             mockServiceCatalogManager
                 .Setup(fun x -> x.CreateAsync(It.IsAny<ServiceCatalog>()))
@@ -156,11 +154,11 @@ type ServiceCatalogControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 404 when catalog does not exist")>]
-    member this.UpdateByIdAsyncShouldReturn404() =
+    member __.UpdateByIdAsyncShouldReturn404(): Async<unit> =
         async {
             let mockServiceCatalogManager = Mock<IServiceCatalogManager>()
             let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<ServiceCatalog>>()
+            let mockPagerStrategyManager = Mock<IPageable<ServiceCatalog>>()
 
             mockServiceCatalogRepository
                 .Setup(fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<ServiceCatalog>>()))
@@ -190,11 +188,11 @@ type ServiceCatalogControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 200 when catalog is updated")>]
-    member this.UpdateByIdAsyncShouldReturn200() =
+    member __.UpdateByIdAsyncShouldReturn200(): Async<unit> =
         async {
             let mockServiceCatalogManager = Mock<IServiceCatalogManager>()
             let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<ServiceCatalog>>()
+            let mockPagerStrategyManager = Mock<IPageable<ServiceCatalog>>()
 
             mockServiceCatalogRepository
                 .Setup(fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<ServiceCatalog>>()))
@@ -227,11 +225,11 @@ type ServiceCatalogControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 404 when catalog does not exist")>]
-    member this.DeleteByIdAsyncShouldReturn404() =
+    member __.DeleteByIdAsyncShouldReturn404(): Async<unit> =
         async {
             let mockServiceCatalogManager = Mock<IServiceCatalogManager>()
             let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<ServiceCatalog>>()
+            let mockPagerStrategyManager = Mock<IPageable<ServiceCatalog>>()
 
             mockServiceCatalogRepository
                 .Setup(fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<ServiceCatalog>>()))
@@ -254,11 +252,11 @@ type ServiceCatalogControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 204 when catalog is eliminated")>]
-    member this.DeleteByIdAsyncShouldReturn204() =
+    member __.DeleteByIdAsyncShouldReturn204(): Async<unit> =
         async {
             let mockServiceCatalogManager = Mock<IServiceCatalogManager>()
             let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<ServiceCatalog>>()
+            let mockPagerStrategyManager = Mock<IPageable<ServiceCatalog>>()
 
             mockServiceCatalogRepository
                 .Setup(fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<ServiceCatalog>>()))

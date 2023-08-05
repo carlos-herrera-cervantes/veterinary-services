@@ -3,9 +3,9 @@
 open AutoMapper
 open VeterinaryServices.Domain.Models
 
-type AutoMapping() as this =
+type AutoMapping() as __ =
     inherit Profile()
 
     do
-        this.CreateMap<UserService, UserServiceDetail>() |> ignore
-        this.CreateMap<Service, ServiceDetail>() |> ignore
+        __.CreateMap<UserService, UserServiceDetail>() |> ignore
+        __.CreateMap<Service, ServiceDetail>() |> ignore

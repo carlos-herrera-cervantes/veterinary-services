@@ -7,7 +7,7 @@ type Pageable<'a>() =
 
     interface IPageable<'a> with
 
-        member this.GetPages(docs: IEnumerable<'a>, totalDocs: int64, page: int, pageSize: int) =
+        member __.GetPages(docs: IEnumerable<'a>, totalDocs: int64, page: int, pageSize: int): Pager<'a> =
             let pager = Pager()
             let skip = page * pageSize
 

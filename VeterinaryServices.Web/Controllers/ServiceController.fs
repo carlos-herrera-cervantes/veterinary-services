@@ -18,84 +18,76 @@ type ServiceController
     (
         serviceRepository: IServiceRepository,
         serviceManager: IServiceManager,
-        totalCalulatorStrategyManager: IStrategyManager,
-        pagerStrategyManager: IPagerStrategyManager<Service>
+        calculatorService: ITotalCalculator,
+        pageableService: IPageable<Service>
     ) =
     inherit ControllerBase()
 
-    member private this._serviceRepository = serviceRepository
-
-    member private this._serviceManager = serviceManager
-
-    member private this._totalCalculatorStrategyManager = totalCalulatorStrategyManager
-
-    member private this._pagerStrategyManager = pagerStrategyManager
-
     [<HttpGet>]
-    member this.GetAllAsync([<FromQuery>] pager: Pager) =
+    member __.GetAllAsync([<FromQuery>] pager: Pager): Async<IActionResult> =
         async {
             let filter = Builders<Service>.Filter.Empty
-            let! totalDocs = this._serviceRepository.CountAsync filter |> Async.AwaitTask
-            let! docs = this._serviceRepository.GetAllAsync(filter, pager.Page, pager.PageSize)
-            let pages = this._pagerStrategyManager.GetPager("classic", docs, totalDocs, pager.Page, pager.PageSize)
+            let! totalDocs = serviceRepository.CountAsync filter |> Async.AwaitTask
+            let! docs = serviceRepository.GetAllAsync(filter, pager.Page, pager.PageSize)
+            let pages = pageableService.GetPages(docs, totalDocs, pager.Page, pager.PageSize)
 
-            return this.Ok pages :> IActionResult
+            return __.Ok pages :> IActionResult
         }
 
     [<HttpGet("{id}")>]
-    member this.GetByIdAsync([<FromRoute>] id: string) =
+    member __.GetByIdAsync([<FromRoute>] id: string): Async<IActionResult> =
         async {
             let filter = Builders<Service>.Filter.Eq((fun s -> s.Id), id)
-            let! service = this._serviceRepository.GetOneAsync filter |> Async.AwaitTask
+            let! service = serviceRepository.GetOneAsync filter |> Async.AwaitTask
 
             match service with
             | null ->
                 let serviceNotFoundMessage = {| message = "Service not found" |}
                 return NotFoundObjectResult(serviceNotFoundMessage) :> IActionResult
-            | _ -> return this.Ok service :> IActionResult
+            | _ -> return __.Ok service :> IActionResult
         }
 
     [<HttpPost("total")>]
-    member this.CalculateTotalAsync([<FromBody>] serviceTotal: ServiceTotal) =
+    member __.CalculateTotalAsync([<FromBody>] serviceTotal: ServiceTotal): Async<IActionResult> =
         async {
-            let! total = this._totalCalculatorStrategyManager.RunJobAsync("classic", serviceTotal.Services)
+            let! total = calculatorService.CalculateTotalAsync(serviceTotal.Services)
             let serviceTotalMessage = {| total = total |}
-            return this.Ok serviceTotalMessage :> IActionResult
+            return __.Ok serviceTotalMessage :> IActionResult
         }
 
     [<HttpPost>]
-    member this.CreateAsync([<FromBody>] service: Service) =
+    member __.CreateAsync([<FromBody>] service: Service): Async<IActionResult> =
         async {
-            do! this._serviceManager.CreateAsync service |> Async.AwaitTask
-            return this.Created("", service) :> IActionResult
+            do! serviceManager.CreateAsync service |> Async.AwaitTask
+            return __.Created("", service) :> IActionResult
         }
 
     [<HttpPut("{id}")>]
-    member this.UpdateByIdAsync([<FromRoute>] id: string, [<FromBody>] service: Service) =
+    member __.UpdateByIdAsync([<FromRoute>] id: string, [<FromBody>] service: Service): Async<IActionResult> =
         async {
             let filter = Builders<Service>.Filter.Eq((fun s -> s.Id), id)
-            let! finded = this._serviceRepository.GetOneAsync filter |> Async.AwaitTask
+            let! finded = serviceRepository.GetOneAsync filter |> Async.AwaitTask
 
             match finded with
             | null ->
                 let serviceNotFoundMessage = {| message = "Service not found" |}
                 return NotFoundObjectResult(serviceNotFoundMessage) :> IActionResult
             | _ ->
-                let! _ = this._serviceManager.UpdateAsync(filter, service) |> Async.AwaitTask
-                return this.Ok service :> IActionResult
+                do! serviceManager.UpdateAsync(filter, service) |> Async.AwaitTask
+                return __.Ok service :> IActionResult
         }
 
     [<HttpDelete("{id}")>]
-    member this.DeleteByIdAsync([<FromRoute>] id: string) =
+    member __.DeleteByIdAsync([<FromRoute>] id: string): Async<IActionResult> =
         async {
             let filter = Builders<Service>.Filter.Eq((fun s -> s.Id), id)
-            let! service = this._serviceRepository.GetOneAsync filter |> Async.AwaitTask
+            let! service = serviceRepository.GetOneAsync filter |> Async.AwaitTask
 
             match service with
             | null ->
                 let serviceNotFoundMessage = {| message = "Service not found" |}
                 return NotFoundObjectResult(serviceNotFoundMessage) :> IActionResult
             | _ ->
-                do! this._serviceManager.DeleteAsync filter |> Async.AwaitTask
-                return this.NoContent() :> IActionResult
+                do! serviceManager.DeleteAsync filter |> Async.AwaitTask
+                return __.NoContent() :> IActionResult
         }

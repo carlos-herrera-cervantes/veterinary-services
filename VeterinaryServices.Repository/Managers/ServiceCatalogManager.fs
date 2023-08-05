@@ -4,23 +4,22 @@ open System
 open System.Threading.Tasks
 open MongoDB.Driver
 open VeterinaryServices.Domain.Models
+open VeterinaryServices.Domain.Constants
 
 type ServiceCatalogManager(client: IMongoClient) =
 
-    let database = Environment.GetEnvironmentVariable("DEFAULT_DB")
-
-    member private this._collection = client.GetDatabase(database).GetCollection("service_catalogs")
+    member private __.collection = client.GetDatabase(MongoConfig.DefaultDB).GetCollection("service_catalogs")
 
     interface IServiceCatalogManager with
 
-        member this.CreateAsync(serviceCatalog: ServiceCatalog) =
-            this._collection.InsertOneAsync serviceCatalog
+        member __.CreateAsync(serviceCatalog: ServiceCatalog): Task =
+            __.collection.InsertOneAsync serviceCatalog
 
-        member this.UpdateAsync(filter: FilterDefinition<ServiceCatalog>, serviceCatalog: ServiceCatalog) =
+        member __.UpdateAsync(filter: FilterDefinition<ServiceCatalog>, serviceCatalog: ServiceCatalog): Task =
             serviceCatalog.UpdatedAt <- DateTime.UtcNow
-            this._collection.ReplaceOneAsync(filter, serviceCatalog) |> ignore
+            __.collection.ReplaceOneAsync(filter, serviceCatalog) |> ignore
             Task.CompletedTask
 
-        member this.DeleteAsync(filter: FilterDefinition<ServiceCatalog>) =
-            this._collection.DeleteOneAsync filter |> ignore
+        member __.DeleteAsync(filter: FilterDefinition<ServiceCatalog>): Task =
+            __.collection.DeleteOneAsync filter |> ignore
             Task.CompletedTask

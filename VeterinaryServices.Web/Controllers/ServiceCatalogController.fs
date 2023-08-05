@@ -17,67 +17,61 @@ type ServiceCatalogController
     (
         serviceCatalogManager: IServiceCatalogManager,
         serviceCatalogRepository: IServiceCatalogRepository,
-        pagerStrategyManager: IPagerStrategyManager<ServiceCatalog>
+        pageableService: IPageable<ServiceCatalog>
     ) =
     inherit ControllerBase()
 
-    member private this._serviceCatalogManager = serviceCatalogManager
-
-    member private this._serviceCatalogRepository = serviceCatalogRepository
-
-    member private this._pagerStrategyManager = pagerStrategyManager
-
     [<HttpGet>]
-    member this.GetAllAsync([<FromQuery>] pager: Pager) =
+    member __.GetAllAsync([<FromQuery>] pager: Pager): Async<IActionResult> =
         async {
             let filter = Builders<ServiceCatalog>.Filter.Empty
-            let! totalDocs = this._serviceCatalogRepository.CountAsync filter |> Async.AwaitTask
-            let! docs = this._serviceCatalogRepository.GetAllAsync(filter, pager.Page, pager.PageSize)
-            let pages = this._pagerStrategyManager.GetPager("classic", docs, totalDocs, pager.Page, pager.PageSize)
+            let! totalDocs = serviceCatalogRepository.CountAsync filter |> Async.AwaitTask
+            let! docs = serviceCatalogRepository.GetAllAsync(filter, pager.Page, pager.PageSize)
+            let pages = pageableService.GetPages(docs, totalDocs, pager.Page, pager.PageSize)
 
-            return this.Ok pages :> IActionResult
+            return __.Ok pages :> IActionResult
         }
 
     [<HttpGet("{id}")>]
-    member this.GetByIdAsync([<FromRoute>] id: string) =
+    member __.GetByIdAsync([<FromRoute>] id: string): Async<IActionResult> =
         async {
             let filter = Builders<ServiceCatalog>.Filter.Eq((fun sc -> sc.Id), id)
-            let! serviceCatalog = this._serviceCatalogRepository.GetOneAsync filter |> Async.AwaitTask
+            let! serviceCatalog = serviceCatalogRepository.GetOneAsync filter |> Async.AwaitTask
 
             match serviceCatalog with
             | null -> return NotFoundResult() :> IActionResult
-            | _ -> return this.Ok serviceCatalog :> IActionResult
+            | _ -> return __.Ok serviceCatalog :> IActionResult
         }
 
     [<HttpPost>]
-    member this.CreateAsync([<FromBody>] serviceCatalog: ServiceCatalog) =
+    member __.CreateAsync([<FromBody>] serviceCatalog: ServiceCatalog): Async<IActionResult> =
         async {
-            let! _ = this._serviceCatalogManager.CreateAsync serviceCatalog |> Async.AwaitTask
-            return this.Created("", serviceCatalog) :> IActionResult
+            let! _ = serviceCatalogManager.CreateAsync serviceCatalog |> Async.AwaitTask
+            return __.Created("", serviceCatalog) :> IActionResult
         }
 
     [<HttpPut("{id}")>]
-    member this.UpdateByIdAsync([<FromRoute>] id: string, [<FromBody>] serviceCatalog: ServiceCatalog) =
+    member __.UpdateByIdAsync([<FromRoute>] id: string, [<FromBody>] serviceCatalog: ServiceCatalog): Async<IActionResult> =
         async {
             let filter = Builders<ServiceCatalog>.Filter.Eq((fun sc -> sc.Id), id)
-            let! finded = this._serviceCatalogRepository.GetOneAsync filter |> Async.AwaitTask
+            let! finded = serviceCatalogRepository.GetOneAsync filter |> Async.AwaitTask
 
             match finded with
             | null -> return NotFoundResult() :> IActionResult
             | _ ->
-                let! _ = this._serviceCatalogManager.UpdateAsync(filter, serviceCatalog) |> Async.AwaitTask
-                return this.Ok serviceCatalog :> IActionResult
+                let! _ = serviceCatalogManager.UpdateAsync(filter, serviceCatalog) |> Async.AwaitTask
+                return __.Ok serviceCatalog :> IActionResult
         }
 
     [<HttpDelete("{id}")>]
-    member this.DeleteByIdAsync([<FromRoute>] id: string) =
+    member __.DeleteByIdAsync([<FromRoute>] id: string): Async<IActionResult> =
         async {
             let filter = Builders<ServiceCatalog>.Filter.Eq((fun sc -> sc.Id), id)
-            let! finded = this._serviceCatalogRepository.GetOneAsync filter |> Async.AwaitTask
+            let! finded = serviceCatalogRepository.GetOneAsync filter |> Async.AwaitTask
 
             match finded with
             | null -> return NotFoundResult() :> IActionResult
             | _ ->
-                do! this._serviceCatalogManager.DeleteAsync filter |> Async.AwaitTask
-                return this.NoContent() :> IActionResult
+                do! serviceCatalogManager.DeleteAsync filter |> Async.AwaitTask
+                return __.NoContent() :> IActionResult
         }

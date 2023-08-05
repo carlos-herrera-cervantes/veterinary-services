@@ -21,93 +21,78 @@ type UserServiceController
     (
         userServiceManager: IUserServiceManager,
         userServiceRepository: IUserServiceRepository,
-        serviceCatalogRepository: IServiceCatalogRepository,
         serviceRepository: IServiceRepository,
-        totalCalulatorStrategyManager: IStrategyManager,
-        pagerStrategyManager: IPagerStrategyManager<UserService>,
+        calculatorService: ITotalCalculator,
+        pageableService: IPageable<UserService>,
         mapper: IMapper
     ) =
     inherit ControllerBase()
 
-    member private this._userServiceManager = userServiceManager
-
-    member private this._userServiceRepository = userServiceRepository
-
-    member private this._serviceCatalogRepository = serviceCatalogRepository
-
-    member private this._serviceRepository = serviceRepository
-
-    member private this._totalCalculatorStrategyManager = totalCalulatorStrategyManager
-
-    member private this._pagerStrategyManager = pagerStrategyManager
-
-    member private this._mapper = mapper
-
     [<HttpGet>]
-    member this.GetAllAsync([<FromQuery>] pager: Pager) =
+    member __.GetAllAsync([<FromQuery>] pager: Pager): Async<IActionResult> =
         async {
             let filter = Builders<UserService>.Filter.Empty
-            let! totalDocs = this._userServiceRepository.CountAsync filter |> Async.AwaitTask
-            let! docs = this._userServiceRepository.GetAllAsync(filter, pager.Page, pager.PageSize)
-            let pages = this._pagerStrategyManager.GetPager("classic", docs, totalDocs, pager.Page, pager.PageSize)
+            let! totalDocs = userServiceRepository.CountAsync filter |> Async.AwaitTask
+            let! docs = userServiceRepository.GetAllAsync(filter, pager.Page, pager.PageSize)
+            let pages = pageableService.GetPages(docs, totalDocs, pager.Page, pager.PageSize)
 
-            return this.Ok pages :> IActionResult
+            return __.Ok pages :> IActionResult
         }
 
     [<HttpGet("me")>]
-    member this.GetAllMeAsync([<FromHeader(Name = "user-id")>] userId: string, [<FromQuery>] pager: Pager) =
+    member __.GetAllMeAsync([<FromHeader(Name = "user-id")>] userId: string, [<FromQuery>] pager: Pager): Async<IActionResult> =
         async {
             let filter = Builders<UserService>.Filter.Eq((fun us -> us.CustomerId), userId)
-            let! totalDocs = this._userServiceRepository.CountAsync filter |> Async.AwaitTask
-            let! docs = this._userServiceRepository.GetAllAsync(filter, pager.Page, pager.PageSize)
-            let pages = this._pagerStrategyManager.GetPager("classic", docs, totalDocs, pager.Page, pager.PageSize)
+            let! totalDocs = userServiceRepository.CountAsync filter |> Async.AwaitTask
+            let! docs = userServiceRepository.GetAllAsync(filter, pager.Page, pager.PageSize)
+            let pages = pageableService.GetPages(docs, totalDocs, pager.Page, pager.PageSize)
 
-            return this.Ok pages :> IActionResult
+            return __.Ok pages :> IActionResult
         }
 
     [<HttpGet("{id}")>]
-    member this.GetByIdAsync([<FromRoute>] id: string) =
+    member __.GetByIdAsync([<FromRoute>] id: string): Async<IActionResult> =
         async {
             let userServiceFilter = Builders<UserService>.Filter.Eq((fun us -> us.Id), id)
-            let! userService = this._userServiceRepository.GetOneAsync userServiceFilter |> Async.AwaitTask
+            let! userService = userServiceRepository.GetOneAsync userServiceFilter |> Async.AwaitTask
 
             match userService with
             | null ->
                 let userServiceNotFoundMessage = {| message = "User service not found" |}
                 return NotFoundObjectResult(userServiceNotFoundMessage) :> IActionResult
             | _ ->
-                let finalService = this._mapper.Map<UserServiceDetail>(userService)
+                let finalService = mapper.Map<UserServiceDetail>(userService)
 
                 let serviceFilter = Builders<Service>.Filter.In((fun s -> s.Id), userService.Services)
-                let! services = this._serviceRepository.GetAllAsync(serviceFilter, 0, 10)
+                let! services = serviceRepository.GetAllAsync(serviceFilter, 0, 10)
 
-                if services.Count > 0 then finalService.ServiceDetails <- this._mapper.Map<ServiceDetail[]>(services)
+                if services.Count > 0 then finalService.ServiceDetails <- mapper.Map<ServiceDetail[]>(services)
 
-                return this.Ok finalService :> IActionResult
+                return __.Ok finalService :> IActionResult
         }
 
     [<HttpGet("me/{id}")>]
-    member this.GetByIdMeAsync([<FromHeader(Name = "user-id")>] userId: string, [<FromRoute>] id: string) =
+    member __.GetByIdMeAsync([<FromHeader(Name = "user-id")>] userId: string, [<FromRoute>] id: string): Async<IActionResult> =
         async {
             let serviceIdMatch = Builders<UserService>.Filter.Eq((fun us -> us.Id), id)
             let userIdMatch = Builders<UserService>.Filter.Eq((fun us -> us.CustomerId), userId)
             let userServiceFilter = Builders<UserService>.Filter.And(serviceIdMatch, userIdMatch)
 
-            let! userService = this._userServiceRepository.GetOneAsync userServiceFilter |> Async.AwaitTask
+            let! userService = userServiceRepository.GetOneAsync userServiceFilter |> Async.AwaitTask
 
             match userService with
             | null ->
                 let userServiceNotFoundMessage = {| message = "User service not found" |}
                 return NotFoundObjectResult(userServiceNotFoundMessage) :> IActionResult
             | _ ->
-                let finalService = this._mapper.Map<UserServiceDetail>(userService)
+                let finalService = mapper.Map<UserServiceDetail>(userService)
 
                 let serviceFilter = Builders<Service>.Filter.In((fun s -> s.Id), userService.Services)
-                let! services = this._serviceRepository.GetAllAsync(serviceFilter, 0, 10)
+                let! services = serviceRepository.GetAllAsync(serviceFilter, 0, 10)
 
-                if services.Count > 0 then finalService.ServiceDetails <- this._mapper.Map<ServiceDetail[]>(services)
+                if services.Count > 0 then finalService.ServiceDetails <- mapper.Map<ServiceDetail[]>(services)
 
-                return this.Ok finalService :> IActionResult
+                return __.Ok finalService :> IActionResult
         }
 
     [<HttpPost>]
@@ -115,45 +100,45 @@ type UserServiceController
     [<PetExist>]
     [<EmployeeExist>]
     [<ServiceExist>]
-    member this.CreateAsync([<FromBody>] userService: UserService) =
+    member __.CreateAsync([<FromBody>] userService: UserService): Async<IActionResult> =
         async {
-            let! total = this._totalCalculatorStrategyManager.RunJobAsync("classic", userService.Services)
+            let! total = calculatorService.CalculateTotalAsync(userService.Services)
             userService.TotalCost <- total
-            do! this._userServiceManager.CreateAsync userService |> Async.AwaitTask
-            return this.Created("", userService) :> IActionResult
+            do! userServiceManager.CreateAsync userService |> Async.AwaitTask
+            return __.Created("", userService) :> IActionResult
         }
 
     [<HttpPost("me")>]
     [<PetExist>]
     [<EmployeeExist>]
     [<ServiceExist>]
-    member this.CreateMeAsync
+    member __.CreateMeAsync
         (
             [<FromHeader(Name = "user-id")>] userId: string,
             [<FromBody>] userService: UserService
-        ) =
+        ): Async<IActionResult> =
         async {
-            let! total = this._totalCalculatorStrategyManager.RunJobAsync("classic", userService.Services)
+            let! total = calculatorService.CalculateTotalAsync(userService.Services)
             userService.TotalCost <- total
             userService.CustomerId <- userId
-            do! this._userServiceManager.CreateAsync userService |> Async.AwaitTask
-            return this.Created("", userService) :> IActionResult
+            do! userServiceManager.CreateAsync userService |> Async.AwaitTask
+            return __.Created("", userService) :> IActionResult
         }
 
     [<HttpPut("me/{id}")>]
     [<ServiceExistFromPatch>]
-    member this.UpdateByIdAsync
+    member __.UpdateByIdAsync
         (
             [<FromHeader(Name = "user-id")>] userId: string,
             [<FromRoute>] id: string,
             [<FromBody>] patchUserService: PatchUserService
-        ) =
+        ): Async<IActionResult> =
         async {
             let serviceIdMatch = Builders<UserService>.Filter.Eq((fun us -> us.Id), id)
             let userIdMatch = Builders<UserService>.Filter.Eq((fun us -> us.CustomerId), userId)
             let userServiceFilter = Builders<UserService>.Filter.And(serviceIdMatch, userIdMatch)
 
-            let! userService = this._userServiceRepository.GetOneAsync userServiceFilter |> Async.AwaitTask
+            let! userService = userServiceRepository.GetOneAsync userServiceFilter |> Async.AwaitTask
 
             match userService with
             | null ->
@@ -169,33 +154,33 @@ type UserServiceController
                     return ConflictObjectResult(serviceChargedMessage) :> IActionResult
                 | _ ->
                     userService.Services <- patchUserService.Services
-                    do! this._userServiceManager.UpdateAsync(userServiceFilter, userService) |> Async.AwaitTask
-                    return this.Ok userService :> IActionResult
+                    do! userServiceManager.UpdateAsync(userServiceFilter, userService) |> Async.AwaitTask
+                    return __.Ok userService :> IActionResult
         }
 
     [<HttpPut("{id}/employee")>]
     [<EmployeeExist>]
-    member this.AssignEmployeeAsync([<FromRoute>] id: string, [<FromBody>] userService: UserService) =
+    member __.AssignEmployeeAsync([<FromRoute>] id: string, [<FromBody>] userService: UserService): Async<IActionResult> =
         async {
             let filter = Builders<UserService>.Filter.Eq((fun us -> us.Id), id)
-            let! finded = this._userServiceRepository.GetOneAsync filter |> Async.AwaitTask
+            let! finded = userServiceRepository.GetOneAsync filter |> Async.AwaitTask
 
             match finded with
             | null ->
                 let userServiceNotFoundMessage = {| message = "User service not found" |}
                 return NotFoundObjectResult(userServiceNotFoundMessage) :> IActionResult
             | _ ->
-                do! this._userServiceManager.UpdateAsync(filter, userService) |> Async.AwaitTask
-                return this.Ok userService :> IActionResult
+                do! userServiceManager.UpdateAsync(filter, userService) |> Async.AwaitTask
+                return __.Ok userService :> IActionResult
         }
 
     [<HttpPut("me/{id}/cancel")>]
-    member this.CancelAsync([<FromHeader(Name = "user-id")>] userId: string, [<FromRoute>] id: string) =
+    member __.CancelAsync([<FromHeader(Name = "user-id")>] userId: string, [<FromRoute>] id: string): Async<IActionResult> =
         async {
             let serviceIdMatch = Builders<UserService>.Filter.Eq((fun us -> us.Id), id)
             let userIdMatch = Builders<UserService>.Filter.Eq((fun us -> us.CustomerId), userId)
             let userServiceFilter = Builders<UserService>.Filter.And(serviceIdMatch, userIdMatch)
-            let! userService = this._userServiceRepository.GetOneAsync userServiceFilter |> Async.AwaitTask
+            let! userService = userServiceRepository.GetOneAsync userServiceFilter |> Async.AwaitTask
 
             match userService with
             | null ->
@@ -211,6 +196,6 @@ type UserServiceController
                     return ConflictObjectResult(serviceChargedMessage) :> IActionResult
                 | _ ->
                     userService.Status <- UserServiceStatus.Canceled
-                    do! this._userServiceManager.UpdateAsync(userServiceFilter, userService) |> Async.AwaitTask
-                    return this.Ok userService :> IActionResult
+                    do! userServiceManager.UpdateAsync(userServiceFilter, userService) |> Async.AwaitTask
+                    return __.Ok userService :> IActionResult
         }

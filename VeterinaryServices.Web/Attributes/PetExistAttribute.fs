@@ -9,15 +9,13 @@ open VeterinaryServices.Domain.Models
 
 type PetExistFilter(petRepository: IPetRepository) =
 
-    member private this._petRepository = petRepository
-
     interface IAsyncActionFilter with
 
-        member this.OnActionExecutionAsync(context: ActionExecutingContext, next: ActionExecutionDelegate) =
+        member __.OnActionExecutionAsync(context: ActionExecutingContext, next: ActionExecutionDelegate): Task =
             async {
                 let userService = context.ActionArguments.["userService"] :?> UserService
                 let filter = Builders<Pet>.Filter.Eq((fun p -> p.Id), userService.PetId)
-                let! counter = this._petRepository.CountAsync filter |> Async.AwaitTask
+                let! counter = petRepository.CountAsync filter |> Async.AwaitTask
 
                 if counter = int64(0) then
                     let petNotFound = {| message = "Pet not found" |}

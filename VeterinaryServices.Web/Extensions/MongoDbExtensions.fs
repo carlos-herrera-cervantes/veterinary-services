@@ -8,8 +8,8 @@ module MongoDbExtensions =
 
     type IServiceCollection with
 
-    member this.AddMongoDbClient() =
+    member __.AddMongoDbClient() =
         let connectionString = Environment.GetEnvironmentVariable("MONGO_DB_URI")
         let client = MongoClient(connectionString)
-        this.AddSingleton<IMongoClient>(fun _ -> client :> IMongoClient) |> ignore
-        this
+        __.AddSingleton<IMongoClient>(fun _ -> client :> IMongoClient) |> ignore
+        __

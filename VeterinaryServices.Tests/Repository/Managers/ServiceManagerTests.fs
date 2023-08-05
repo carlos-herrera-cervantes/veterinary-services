@@ -12,10 +12,10 @@ type ServiceManagerTests() =
 
     let uri = Environment.GetEnvironmentVariable("MONGO_DB_URI")
 
-    member private this._mongoClient = MongoClient(uri)
+    member private __.mongoClient = MongoClient(uri)
 
     [<Fact(DisplayName = "Should create, update and delete a document")>]
-    member this.CreateUpdateAndDeleteAsyncShouldCreateUpdateAndDeleteDocument() =
+    member __.CreateUpdateAndDeleteAsyncShouldCreateUpdateAndDeleteDocument(): Async<unit> =
         async {
             let newService = Service()
             newService.Name <- "Health Care"
@@ -23,10 +23,10 @@ type ServiceManagerTests() =
             newService.CategoryId <- "6371486d7359884e2d3b3bda"
             newService.MeasurementUnit <- "Night"
 
-            let serviceManager = ServiceManager(this._mongoClient) :> IServiceManager
+            let serviceManager = ServiceManager(__.mongoClient) :> IServiceManager
             do! serviceManager.CreateAsync(newService) |> Async.AwaitTask
 
-            let serviceRepository = ServiceRepository(this._mongoClient) :> IServiceRepository
+            let serviceRepository = ServiceRepository(__.mongoClient) :> IServiceRepository
             let! service =
                 serviceRepository.GetOneAsync(Builders<Service>.Filter.Eq((fun s -> s.Name), "Health Care"))
                 |> Async.AwaitTask

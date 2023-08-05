@@ -1,22 +1,22 @@
 ﻿namespace VeterinaryServices.Repository.Repositories
 
 open System
+open System.Threading.Tasks
 open System.Collections.Generic
 open MongoDB.Driver
 open VeterinaryServices.Domain.Models
+open VeterinaryServices.Domain.Constants
 
 type ServiceRepository(client: IMongoClient) =
 
-    let database = Environment.GetEnvironmentVariable("DEFAULT_DB")
-
-    member private this._collection = client.GetDatabase(database).GetCollection<Service>("services")
+    member private __.collection = client.GetDatabase(MongoConfig.DefaultDB).GetCollection<Service>("services")
 
     interface IServiceRepository with
 
-        member this.GetAllAsync(filter: FilterDefinition<Service>, page: int, pageSize: int) =
+        member __.GetAllAsync(filter: FilterDefinition<Service>, page: int, pageSize: int): Async<ICollection<Service>> =
             async {
                 let! documents =
-                    this._collection
+                    __.collection
                         .Find(filter)
                         .SortByDescending(fun s -> s.CreatedAt :> obj)
                         .Skip(Nullable(page * pageSize))
@@ -26,8 +26,6 @@ type ServiceRepository(client: IMongoClient) =
                 return documents :> ICollection<Service>
             }
 
-        member this.GetOneAsync(filter: FilterDefinition<Service>) =
-            this._collection.FindAsync(filter).Result.FirstOrDefaultAsync()
+        member __.GetOneAsync(filter: FilterDefinition<Service>): Task<Service> = __.collection.FindAsync(filter).Result.FirstOrDefaultAsync()
 
-        member this.CountAsync(filter: FilterDefinition<Service>) =
-            this._collection.CountDocumentsAsync filter
+        member __.CountAsync(filter: FilterDefinition<Service>): Task<int64> = __.collection.CountDocumentsAsync filter

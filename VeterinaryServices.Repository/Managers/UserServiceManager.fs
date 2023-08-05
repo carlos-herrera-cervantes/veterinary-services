@@ -4,22 +4,21 @@ open System
 open System.Threading.Tasks
 open MongoDB.Driver
 open VeterinaryServices.Domain.Models
+open VeterinaryServices.Domain.Constants
 
 type UserServiceManager(client: IMongoClient) =
 
-    let database = Environment.GetEnvironmentVariable("DEFAULT_DB")
-
-    member private this._collection = client.GetDatabase(database).GetCollection<UserService>("user_services")
+    member private __.collection = client.GetDatabase(MongoConfig.DefaultDB).GetCollection<UserService>("user_services")
 
     interface IUserServiceManager with
 
-        member this.CreateAsync(userService: UserService) = this._collection.InsertOneAsync userService
+        member __.CreateAsync(userService: UserService): Task = __.collection.InsertOneAsync userService
 
-        member this.UpdateAsync(filter: FilterDefinition<UserService>, userService: UserService) =
+        member __.UpdateAsync(filter: FilterDefinition<UserService>, userService: UserService): Task =
             userService.UpdatedAt <- DateTime.UtcNow
-            this._collection.ReplaceOneAsync(filter, userService) |> ignore
+            __.collection.ReplaceOneAsync(filter, userService) |> ignore
             Task.CompletedTask
 
-        member this.DeleteManyAsync(filter: FilterDefinition<UserService>) =
-            this._collection.DeleteManyAsync(filter) |> ignore
+        member __.DeleteManyAsync(filter: FilterDefinition<UserService>): Task =
+            __.collection.DeleteManyAsync(filter) |> ignore
             Task.CompletedTask

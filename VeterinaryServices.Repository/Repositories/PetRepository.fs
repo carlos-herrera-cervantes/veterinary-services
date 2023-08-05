@@ -1,16 +1,14 @@
 ﻿namespace VeterinaryServices.Repository.Repositories
 
-open System
+open System.Threading.Tasks
 open MongoDB.Driver
 open VeterinaryServices.Domain.Models
+open VeterinaryServices.Domain.Constants
 
 type PetRepository(client: IMongoClient) =
 
-    let database = Environment.GetEnvironmentVariable("PET_DB")
-
-    member private this._collection = client.GetDatabase(database).GetCollection<Pet>("profiles")
+    member private __.collection = client.GetDatabase(MongoConfig.PetDB).GetCollection<Pet>("profiles")
 
     interface IPetRepository with
 
-        member this.CountAsync(filter: FilterDefinition<Pet>) =
-            this._collection.CountDocumentsAsync filter
+        member __.CountAsync(filter: FilterDefinition<Pet>): Task<int64> = __.collection.CountDocumentsAsync filter

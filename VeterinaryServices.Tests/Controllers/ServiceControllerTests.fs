@@ -19,12 +19,12 @@ open VeterinaryServices.Web.Controllers
 type ServiceControllerTests() =
 
     [<Fact(DisplayName = "Should return 200 when services are listed successfully")>]
-    member this.GetAllAsyncShouldReturn200() =
+    member __.GetAllAsyncShouldReturn200(): Async<unit> =
         async {
             let mockServiceRepository = Mock<IServiceRepository>()
             let mockServiceManager = Mock<IServiceManager>()
-            let mockTotalCalculatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<Service>>()
+            let mockTotalCalculatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<Service>>()
 
             mockServiceRepository
                 .Setup(fun x -> x.CountAsync(It.IsAny<FilterDefinition<Service>>()))
@@ -37,8 +37,7 @@ type ServiceControllerTests() =
                 }) |> ignore
             mockPagerStrategyManager
                 .Setup(fun x ->
-                    x.GetPager(
-                        It.IsAny<string>(),
+                    x.GetPages(
                         It.IsAny<IEnumerable<Service>>(),
                         It.IsAny<int64>(),
                         It.IsAny<int>(),
@@ -65,8 +64,7 @@ type ServiceControllerTests() =
                         It.IsAny<int>())), Times.Once)
             mockPagerStrategyManager
                 .Verify((fun x ->
-                    x.GetPager(
-                        It.IsAny<string>(),
+                    x.GetPages(
                         It.IsAny<IEnumerable<Service>>(),
                         It.IsAny<int64>(),
                         It.IsAny<int>(),
@@ -76,12 +74,12 @@ type ServiceControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 404 when service does not exist")>]
-    member this.GetByIdAsyncShouldReturn404() =
+    member __.GetByIdAsyncShouldReturn404(): Async<unit> =
         async {
             let mockServiceRepository = Mock<IServiceRepository>()
             let mockServiceManager = Mock<IServiceManager>()
-            let mockTotalCalculatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<Service>>()
+            let mockTotalCalculatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<Service>>()
 
             mockServiceRepository
                 .Setup(fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<Service>>()))
@@ -104,12 +102,12 @@ type ServiceControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 200 when service exist")>]
-    member this.GetByIdAsyncShouldReturn200() =
+    member __.GetByIdAsyncShouldReturn200(): Async<unit> =
         async {
             let mockServiceRepository = Mock<IServiceRepository>()
             let mockServiceManager = Mock<IServiceManager>()
-            let mockTotalCalculatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<Service>>()
+            let mockTotalCalculatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<Service>>()
 
             mockServiceRepository
                 .Setup(fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<Service>>()))
@@ -132,15 +130,15 @@ type ServiceControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 200 when the total is calculated successfully")>]
-    member this.CalculateTotalAsyncShouldReturn200() =
+    member __.CalculateTotalAsyncShouldReturn200(): Async<unit> =
         async {
             let mockServiceRepository = Mock<IServiceRepository>()
             let mockServiceManager = Mock<IServiceManager>()
-            let mockTotalCalculatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<Service>>()
+            let mockTotalCalculatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<Service>>()
 
             mockTotalCalculatorStrategyManager
-                .Setup(fun x -> x.RunJobAsync(It.IsAny<string>(), It.IsAny<string array>()))
+                .Setup(fun x -> x.CalculateTotalAsync(It.IsAny<string array>()))
                 .Returns(async { return 100M }) |> ignore
 
             let serviceController =
@@ -154,18 +152,18 @@ type ServiceControllerTests() =
             let! response = serviceController.CalculateTotalAsync(ServiceTotal())
 
             mockTotalCalculatorStrategyManager
-                .Verify((fun x -> x.RunJobAsync(It.IsAny<string>(), It.IsAny<string array>())), Times.Once)
+                .Verify((fun x -> x.CalculateTotalAsync(It.IsAny<string array>())), Times.Once)
 
             Assert.IsType<OkObjectResult>(response) |> ignore
         }
 
     [<Fact(DisplayName = "Should return 404 when service does not exist")>]
-    member this.UpdateByIdAsyncShouldReturn404() =
+    member __.UpdateByIdAsyncShouldReturn404(): Async<unit> =
         async {
             let mockServiceRepository = Mock<IServiceRepository>()
             let mockServiceManager = Mock<IServiceManager>()
-            let mockTotalCalculatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<Service>>()
+            let mockTotalCalculatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<Service>>()
 
             mockServiceRepository
                 .Setup(fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<Service>>()))
@@ -188,12 +186,12 @@ type ServiceControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 200 when service is updated successfully")>]
-    member this.UpdateByIdAsyncShouldReturn200() =
+    member __.UpdateByIdAsyncShouldReturn200(): Async<unit> =
         async {
             let mockServiceRepository = Mock<IServiceRepository>()
             let mockServiceManager = Mock<IServiceManager>()
-            let mockTotalCalculatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<Service>>()
+            let mockTotalCalculatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<Service>>()
 
             mockServiceRepository
                 .Setup(fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<Service>>()))
@@ -216,12 +214,12 @@ type ServiceControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 404 when service does not exist")>]
-    member this.DeleteByIdAsyncShouldReturn404() =
+    member __.DeleteByIdAsyncShouldReturn404(): Async<unit> =
         async {
             let mockServiceRepository = Mock<IServiceRepository>()
             let mockServiceManager = Mock<IServiceManager>()
-            let mockTotalCalculatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<Service>>()
+            let mockTotalCalculatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<Service>>()
 
             mockServiceRepository
                 .Setup(fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<Service>>()))
@@ -244,12 +242,12 @@ type ServiceControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 204 when service is deleted successfully")>]
-    member this.DeleteByIdAsyncShouldReturn204() =
+    member __.DeleteByIdAsyncShouldReturn204(): Async<unit> =
         async {
             let mockServiceRepository = Mock<IServiceRepository>()
             let mockServiceManager = Mock<IServiceManager>()
-            let mockTotalCalculatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<Service>>()
+            let mockTotalCalculatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<Service>>()
 
             mockServiceRepository
                 .Setup(fun x -> x.GetOneAsync(It.IsAny<FilterDefinition<Service>>()))

@@ -12,12 +12,12 @@ type UserServiceManagerTests() =
 
     let uri = Environment.GetEnvironmentVariable("MONGO_DB_URI")
 
-    member private this._mongoClient = MongoClient(uri)
+    member private __.mongoClient = MongoClient(uri)
 
     [<Fact(DisplayName = "Should create and update document")>]
-    member this.CreateAndUpdateAsyncShouldCreateAndUpdateDocument() =
+    member __.CreateAndUpdateAsyncShouldCreateAndUpdateDocument(): Async<unit> =
         async {
-            let userServiceManager = UserServiceManager(this._mongoClient) :> IUserServiceManager
+            let userServiceManager = UserServiceManager(__.mongoClient) :> IUserServiceManager
             let newUserService = UserService()
             newUserService.CustomerId <- "63707d2ba64a2dc5cf24bd73"
             newUserService.PetId <- "63707d4839e9155fb8460044"
@@ -25,7 +25,7 @@ type UserServiceManagerTests() =
 
             do! userServiceManager.CreateAsync(newUserService) |> Async.AwaitTask
 
-            let userServiceRepository = UserServiceRepository(this._mongoClient) :> IUserServiceRepository
+            let userServiceRepository = UserServiceRepository(__.mongoClient) :> IUserServiceRepository
             let! userService =
                 userServiceRepository
                     .GetOneAsync(Builders<UserService>.Filter.Eq((fun us -> us.CustomerId), "63707d2ba64a2dc5cf24bd73"))
