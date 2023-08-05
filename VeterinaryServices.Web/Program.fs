@@ -23,11 +23,8 @@ let main args =
     builder.Services.AddSingleton<IPetRepository, PetRepository>() |> ignore
     builder.Services.AddSingleton<ICustomerRepository, CustomerRepository>() |> ignore
     builder.Services.AddSingleton<IEmployeeRepository, EmployeeRepository>() |> ignore
-    builder.Services.AddSingleton<IStrategyManager, StrategyManager>() |> ignore
     builder.Services.AddSingleton<ITotalCalculator, ClassicCalculator>() |> ignore
     builder.Services.AddSingleton(typedefof<IPageable<_>>, typedefof<Pageable<_>>) |> ignore
-    builder.Services.AddSingleton(typedefof<IPagerStrategyManager<_>>, typedefof<PagerStrategyManager<_>>) |> ignore
-
 
     let app = builder.Build()
 

@@ -2,4 +2,4 @@
 
 [<AllowNullLiteral>]
 type ITotalCalculator =
-    abstract member CalculateTotalAsync: string array -> Async<decimal>
+    abstract member CalculateTotalAsync: array<string> -> Async<decimal>

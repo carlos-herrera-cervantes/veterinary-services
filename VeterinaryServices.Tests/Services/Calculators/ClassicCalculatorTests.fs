@@ -12,7 +12,7 @@ open VeterinaryServices.Domain.Models
 type ClassicCalculatorTests() =
 
     [<Fact(DisplayName = "Should return 0 when the services do not exist")>]
-    member this.CalculateTotalAsyncShouldReturn0() =
+    member __.CalculateTotalAsyncShouldReturn0(): Async<unit> =
         async {
             let mockServiceRepository = Mock<IServiceRepository>()
 
@@ -41,7 +41,7 @@ type ClassicCalculatorTests() =
         }
 
     [<Fact(DisplayName = "Should return the correct total")>]
-    member this.CalculateTotalAsyncShouldReturnSuccessCalculation() =
+    member __.CalculateTotalAsyncShouldReturnSuccessCalculation(): Async<unit> =
         async {
             let mockServiceRepository = Mock<IServiceRepository>()
             

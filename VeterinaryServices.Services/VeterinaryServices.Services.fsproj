@@ -14,12 +14,8 @@
     <Compile Include="Types\Pager.fs" />
     <Compile Include="Calculators\ITotalCalculator.fs" />
     <Compile Include="Calculators\ClassicCalculator.fs" />
-    <Compile Include="Calculators\IStrategyManager.fs" />
-    <Compile Include="Calculators\StrategyManager.fs" />
     <Compile Include="Pagers\IPageable.fs" />
     <Compile Include="Pagers\Pageable.fs" />
-    <Compile Include="Pagers\IPagerStrategyManager.fs" />
-    <Compile Include="Pagers\PagerStrategyManager.fs" />
     <PackageReference Include="MongoDB.Driver" Version="2.18.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <ProjectReference Include="..\VeterinaryServices.Repository\VeterinaryServices.Repository.fsproj" />

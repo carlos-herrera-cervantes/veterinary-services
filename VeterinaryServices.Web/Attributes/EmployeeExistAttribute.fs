@@ -10,11 +10,9 @@ open VeterinaryServices.Domain.Models
 
 type EmployeeExistFilter(employeeRepository: IEmployeeRepository) =
 
-    member private this._employeeRepository = employeeRepository
-
     interface IAsyncActionFilter with
 
-        member this.OnActionExecutionAsync(context: ActionExecutingContext, next: ActionExecutionDelegate) =
+        member __.OnActionExecutionAsync(context: ActionExecutingContext, next: ActionExecutionDelegate): Task =
             async {
                 let userService = context.ActionArguments.["userService"] :?> UserService
 
@@ -23,7 +21,7 @@ type EmployeeExistFilter(employeeRepository: IEmployeeRepository) =
                 | _ ->
                     let employeeIds = userService.EmployeeDetails.Select(fun ed -> ed.EmployeeId)
                     let filter = Builders<Employee>.Filter.In((fun e -> e.EmployeeId), employeeIds)
-                    let! counter = this._employeeRepository.CountAsync filter |> Async.AwaitTask
+                    let! counter = employeeRepository.CountAsync filter |> Async.AwaitTask
 
                     if counter <> int64(userService.EmployeeDetails.Length) then
                         let employeeNotFound = {| message = "Some of the employees do not exist" |}

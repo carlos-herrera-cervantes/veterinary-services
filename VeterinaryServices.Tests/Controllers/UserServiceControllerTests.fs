@@ -21,14 +21,13 @@ open VeterinaryServices.Domain.Constants
 type UserServiceControllerTests() =
 
     [<Fact(DisplayName = "Should return 200 when list user services success")>]
-    member this.GetAllAsyncShouldReturn200() =
+    member __.GetAllAsyncShouldReturn200(): Async<unit> =
         async {
             let mockUserServiceManager = Mock<IUserServiceManager>()
             let mockUserServiceRepository = Mock<IUserServiceRepository>()
-            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
             let mockServiceRepository = Mock<IServiceRepository>()
-            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockTotalCalulatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<UserService>>()
             let mockMapper = Mock<IMapper>()
 
             mockUserServiceRepository
@@ -42,8 +41,7 @@ type UserServiceControllerTests() =
                 }) |> ignore
             mockPagerStrategyManager
                 .Setup(fun x ->
-                    x.GetPager(
-                        It.IsAny<string>(),
+                    x.GetPages(
                         It.IsAny<IEnumerable<UserService>>(),
                         It.IsAny<int64>(),
                         It.IsAny<int>(),
@@ -54,7 +52,6 @@ type UserServiceControllerTests() =
                 UserServiceController(
                     mockUserServiceManager.Object,
                     mockUserServiceRepository.Object,
-                    mockServiceCatalogRepository.Object,
                     mockServiceRepository.Object,
                     mockTotalCalulatorStrategyManager.Object,
                     mockPagerStrategyManager.Object,
@@ -73,8 +70,7 @@ type UserServiceControllerTests() =
                         It.IsAny<int>())), Times.Once)
             mockPagerStrategyManager
                 .Verify((fun x ->
-                    x.GetPager(
-                        It.IsAny<string>(),
+                    x.GetPages(
                         It.IsAny<IEnumerable<UserService>>(),
                         It.IsAny<int64>(),
                         It.IsAny<int>(),
@@ -84,14 +80,13 @@ type UserServiceControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 200 when user services are successfully listed for a particular user")>]
-    member this.GetAllMeAsync() =
+    member __.GetAllMeAsync(): Async<unit> =
         async {
             let mockUserServiceManager = Mock<IUserServiceManager>()
             let mockUserServiceRepository = Mock<IUserServiceRepository>()
-            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
             let mockServiceRepository = Mock<IServiceRepository>()
-            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockTotalCalulatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<UserService>>()
             let mockMapper = Mock<IMapper>()
 
             mockUserServiceRepository
@@ -105,8 +100,7 @@ type UserServiceControllerTests() =
                 }) |> ignore
             mockPagerStrategyManager
                 .Setup(fun x ->
-                    x.GetPager(
-                        It.IsAny<string>(),
+                    x.GetPages(
                         It.IsAny<IEnumerable<UserService>>(),
                         It.IsAny<int64>(),
                         It.IsAny<int>(),
@@ -117,7 +111,6 @@ type UserServiceControllerTests() =
                 UserServiceController(
                     mockUserServiceManager.Object,
                     mockUserServiceRepository.Object,
-                    mockServiceCatalogRepository.Object,
                     mockServiceRepository.Object,
                     mockTotalCalulatorStrategyManager.Object,
                     mockPagerStrategyManager.Object,
@@ -136,8 +129,7 @@ type UserServiceControllerTests() =
                         It.IsAny<int>())), Times.Once)
             mockPagerStrategyManager
                 .Verify((fun x ->
-                    x.GetPager(
-                        It.IsAny<string>(),
+                    x.GetPages(
                         It.IsAny<IEnumerable<UserService>>(),
                         It.IsAny<int64>(),
                         It.IsAny<int>(),
@@ -147,14 +139,13 @@ type UserServiceControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 404 when user service is not found")>]
-    member this.GetByIdAsyncShouldReturn404() =
+    member __.GetByIdAsyncShouldReturn404(): Async<unit> =
         async {
             let mockUserServiceManager = Mock<IUserServiceManager>()
             let mockUserServiceRepository = Mock<IUserServiceRepository>()
-            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
             let mockServiceRepository = Mock<IServiceRepository>()
-            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockTotalCalulatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<UserService>>()
             let mockMapper = Mock<IMapper>()
 
             mockUserServiceRepository
@@ -165,7 +156,6 @@ type UserServiceControllerTests() =
                 UserServiceController(
                     mockUserServiceManager.Object,
                     mockUserServiceRepository.Object,
-                    mockServiceCatalogRepository.Object,
                     mockServiceRepository.Object,
                     mockTotalCalulatorStrategyManager.Object,
                     mockPagerStrategyManager.Object,
@@ -181,14 +171,13 @@ type UserServiceControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 200 when user service exist")>]
-    member this.GetByIdAsyncShouldReturn200() =
+    member __.GetByIdAsyncShouldReturn200(): Async<unit> =
         async {
             let mockUserServiceManager = Mock<IUserServiceManager>()
             let mockUserServiceRepository = Mock<IUserServiceRepository>()
-            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
             let mockServiceRepository = Mock<IServiceRepository>()
-            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockTotalCalulatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<UserService>>()
             let mockMapper = Mock<IMapper>()
 
             mockUserServiceRepository
@@ -211,7 +200,6 @@ type UserServiceControllerTests() =
                 UserServiceController(
                     mockUserServiceManager.Object,
                     mockUserServiceRepository.Object,
-                    mockServiceCatalogRepository.Object,
                     mockServiceRepository.Object,
                     mockTotalCalulatorStrategyManager.Object,
                     mockPagerStrategyManager.Object,
@@ -237,14 +225,13 @@ type UserServiceControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 404 when user service does not exist for specific user")>]
-    member this.GetByIdMeAsyncShouldReturn404() =
+    member __.GetByIdMeAsyncShouldReturn404(): Async<unit> =
         async {
             let mockUserServiceManager = Mock<IUserServiceManager>()
             let mockUserServiceRepository = Mock<IUserServiceRepository>()
-            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
             let mockServiceRepository = Mock<IServiceRepository>()
-            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockTotalCalulatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<UserService>>()
             let mockMapper = Mock<IMapper>()
 
             mockUserServiceRepository
@@ -255,7 +242,6 @@ type UserServiceControllerTests() =
                 UserServiceController(
                     mockUserServiceManager.Object,
                     mockUserServiceRepository.Object,
-                    mockServiceCatalogRepository.Object,
                     mockServiceRepository.Object,
                     mockTotalCalulatorStrategyManager.Object,
                     mockPagerStrategyManager.Object,
@@ -271,14 +257,13 @@ type UserServiceControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 200 when user service is successfully found for a particular user")>]
-    member this.GetByIdMeAsyncShouldReturn200() =
+    member __.GetByIdMeAsyncShouldReturn200(): Async<unit> =
         async {
             let mockUserServiceManager = Mock<IUserServiceManager>()
             let mockUserServiceRepository = Mock<IUserServiceRepository>()
-            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
             let mockServiceRepository = Mock<IServiceRepository>()
-            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockTotalCalulatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<UserService>>()
             let mockMapper = Mock<IMapper>()
 
             mockUserServiceRepository
@@ -301,7 +286,6 @@ type UserServiceControllerTests() =
                 UserServiceController(
                     mockUserServiceManager.Object,
                     mockUserServiceRepository.Object,
-                    mockServiceCatalogRepository.Object,
                     mockServiceRepository.Object,
                     mockTotalCalulatorStrategyManager.Object,
                     mockPagerStrategyManager.Object,
@@ -327,18 +311,17 @@ type UserServiceControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 201 when user service is created successfully")>]
-    member this.CreateAsyncShouldReturn201() =
+    member __.CreateAsyncShouldReturn201(): Async<unit> =
         async {
             let mockUserServiceManager = Mock<IUserServiceManager>()
             let mockUserServiceRepository = Mock<IUserServiceRepository>()
-            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
             let mockServiceRepository = Mock<IServiceRepository>()
-            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockTotalCalulatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<UserService>>()
             let mockMapper = Mock<IMapper>()
 
             mockTotalCalulatorStrategyManager
-                .Setup(fun x -> x.RunJobAsync(It.IsAny<string>(), It.IsAny<string array>()))
+                .Setup(fun x -> x.CalculateTotalAsync(It.IsAny<string array>()))
                 .Returns(async { return 10M }) |> ignore
             mockUserServiceManager
                 .Setup(fun x -> x.CreateAsync(It.IsAny<UserService>()))
@@ -348,7 +331,6 @@ type UserServiceControllerTests() =
                 UserServiceController(
                     mockUserServiceManager.Object,
                     mockUserServiceRepository.Object,
-                    mockServiceCatalogRepository.Object,
                     mockServiceRepository.Object,
                     mockTotalCalulatorStrategyManager.Object,
                     mockPagerStrategyManager.Object,
@@ -358,7 +340,7 @@ type UserServiceControllerTests() =
             let! response = userServiceController.CreateAsync(UserService())
 
             mockTotalCalulatorStrategyManager
-                .Verify((fun x -> x.RunJobAsync(It.IsAny<string>(), It.IsAny<string array>())), Times.Once)
+                .Verify((fun x -> x.CalculateTotalAsync(It.IsAny<string array>())), Times.Once)
             mockUserServiceManager
                 .Verify((fun x -> x.CreateAsync(It.IsAny<UserService>())), Times.Once)
 
@@ -366,18 +348,17 @@ type UserServiceControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 201 when a user service is created successfully for specific user")>]
-    member this.CreateMeAsyncShouldReturn201() =
+    member __.CreateMeAsyncShouldReturn201(): Async<unit> =
         async {
             let mockUserServiceManager = Mock<IUserServiceManager>()
             let mockUserServiceRepository = Mock<IUserServiceRepository>()
-            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
             let mockServiceRepository = Mock<IServiceRepository>()
-            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockTotalCalulatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<UserService>>()
             let mockMapper = Mock<IMapper>()
 
             mockTotalCalulatorStrategyManager
-                .Setup(fun x -> x.RunJobAsync(It.IsAny<string>(), It.IsAny<string array>()))
+                .Setup(fun x -> x.CalculateTotalAsync(It.IsAny<string array>()))
                 .Returns(async { return 10M }) |> ignore
             mockUserServiceManager
                 .Setup(fun x -> x.CreateAsync(It.IsAny<UserService>()))
@@ -387,7 +368,6 @@ type UserServiceControllerTests() =
                 UserServiceController(
                     mockUserServiceManager.Object,
                     mockUserServiceRepository.Object,
-                    mockServiceCatalogRepository.Object,
                     mockServiceRepository.Object,
                     mockTotalCalulatorStrategyManager.Object,
                     mockPagerStrategyManager.Object,
@@ -397,7 +377,7 @@ type UserServiceControllerTests() =
             let! response = userServiceController.CreateMeAsync("dummy-id", UserService())
 
             mockTotalCalulatorStrategyManager
-                .Verify((fun x -> x.RunJobAsync(It.IsAny<string>(), It.IsAny<string array>())), Times.Once)
+                .Verify((fun x -> x.CalculateTotalAsync(It.IsAny<string array>())), Times.Once)
             mockUserServiceManager
                 .Verify((fun x -> x.CreateAsync(It.IsAny<UserService>())), Times.Once)
 
@@ -405,14 +385,13 @@ type UserServiceControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 404 when user service does not exist")>]
-    member this.AssignEmployeeAsyncShouldReturn404() =
+    member __.AssignEmployeeAsyncShouldReturn404(): Async<unit> =
         async {
             let mockUserServiceManager = Mock<IUserServiceManager>()
             let mockUserServiceRepository = Mock<IUserServiceRepository>()
-            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
             let mockServiceRepository = Mock<IServiceRepository>()
-            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockTotalCalulatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<UserService>>()
             let mockMapper = Mock<IMapper>()
 
             mockUserServiceRepository
@@ -423,7 +402,6 @@ type UserServiceControllerTests() =
                 UserServiceController(
                     mockUserServiceManager.Object,
                     mockUserServiceRepository.Object,
-                    mockServiceCatalogRepository.Object,
                     mockServiceRepository.Object,
                     mockTotalCalulatorStrategyManager.Object,
                     mockPagerStrategyManager.Object,
@@ -439,14 +417,13 @@ type UserServiceControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 200 an employee is assigned successfully to a user service")>]
-    member this.AssignEmployeeAsyncShouldReturn200() =
+    member __.AssignEmployeeAsyncShouldReturn200(): Async<unit> =
         async {
             let mockUserServiceManager = Mock<IUserServiceManager>()
             let mockUserServiceRepository = Mock<IUserServiceRepository>()
-            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
             let mockServiceRepository = Mock<IServiceRepository>()
-            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockTotalCalulatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<UserService>>()
             let mockMapper = Mock<IMapper>()
 
             mockUserServiceRepository
@@ -457,7 +434,6 @@ type UserServiceControllerTests() =
                 UserServiceController(
                     mockUserServiceManager.Object,
                     mockUserServiceRepository.Object,
-                    mockServiceCatalogRepository.Object,
                     mockServiceRepository.Object,
                     mockTotalCalulatorStrategyManager.Object,
                     mockPagerStrategyManager.Object,
@@ -473,14 +449,13 @@ type UserServiceControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 404 when user service does not exist")>]
-    member this.UpdateByIdAsyncShouldReturn404() =
+    member __.UpdateByIdAsyncShouldReturn404(): Async<unit> =
         async {
             let mockUserServiceManager = Mock<IUserServiceManager>()
             let mockUserServiceRepository = Mock<IUserServiceRepository>()
-            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
             let mockServiceRepository = Mock<IServiceRepository>()
-            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockTotalCalulatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<UserService>>()
             let mockMapper = Mock<IMapper>()
 
             mockUserServiceRepository
@@ -491,7 +466,6 @@ type UserServiceControllerTests() =
                 UserServiceController(
                     mockUserServiceManager.Object,
                     mockUserServiceRepository.Object,
-                    mockServiceCatalogRepository.Object,
                     mockServiceRepository.Object,
                     mockTotalCalulatorStrategyManager.Object,
                     mockPagerStrategyManager.Object,
@@ -511,14 +485,13 @@ type UserServiceControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 409 when user service has the canceled status")>]
-    member this.UpdateByIdAsyncShouldReturn409ByCanceledStatus() =
+    member __.UpdateByIdAsyncShouldReturn409ByCanceledStatus(): Async<unit> =
         async {
             let mockUserServiceManager = Mock<IUserServiceManager>()
             let mockUserServiceRepository = Mock<IUserServiceRepository>()
-            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
             let mockServiceRepository = Mock<IServiceRepository>()
-            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockTotalCalulatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<UserService>>()
             let mockMapper = Mock<IMapper>()
 
             let dummyUserService = UserService()
@@ -532,7 +505,6 @@ type UserServiceControllerTests() =
                 UserServiceController(
                     mockUserServiceManager.Object,
                     mockUserServiceRepository.Object,
-                    mockServiceCatalogRepository.Object,
                     mockServiceRepository.Object,
                     mockTotalCalulatorStrategyManager.Object,
                     mockPagerStrategyManager.Object,
@@ -552,14 +524,13 @@ type UserServiceControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 409 when user service has the charged status")>]
-    member this.UpdateByIdAsyncShouldReturn409ByChargedStatus() =
+    member __.UpdateByIdAsyncShouldReturn409ByChargedStatus(): Async<unit> =
         async {
             let mockUserServiceManager = Mock<IUserServiceManager>()
             let mockUserServiceRepository = Mock<IUserServiceRepository>()
-            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
             let mockServiceRepository = Mock<IServiceRepository>()
-            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockTotalCalulatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<UserService>>()
             let mockMapper = Mock<IMapper>()
 
             let dummyUserService = UserService()
@@ -573,7 +544,6 @@ type UserServiceControllerTests() =
                 UserServiceController(
                     mockUserServiceManager.Object,
                     mockUserServiceRepository.Object,
-                    mockServiceCatalogRepository.Object,
                     mockServiceRepository.Object,
                     mockTotalCalulatorStrategyManager.Object,
                     mockPagerStrategyManager.Object,
@@ -593,14 +563,13 @@ type UserServiceControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 200 when user service is updated successfully")>]
-    member this.UpdateByIdAsyncShouldRetur200() =
+    member __.UpdateByIdAsyncShouldRetur200(): Async<unit> =
         async {
             let mockUserServiceManager = Mock<IUserServiceManager>()
             let mockUserServiceRepository = Mock<IUserServiceRepository>()
-            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
             let mockServiceRepository = Mock<IServiceRepository>()
-            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockTotalCalulatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<UserService>>()
             let mockMapper = Mock<IMapper>()
 
             let dummyUserService = UserService()
@@ -617,7 +586,6 @@ type UserServiceControllerTests() =
                 UserServiceController(
                     mockUserServiceManager.Object,
                     mockUserServiceRepository.Object,
-                    mockServiceCatalogRepository.Object,
                     mockServiceRepository.Object,
                     mockTotalCalulatorStrategyManager.Object,
                     mockPagerStrategyManager.Object,
@@ -643,14 +611,13 @@ type UserServiceControllerTests() =
 
 
     [<Fact(DisplayName = "Should return 404 when user service does not exist")>]
-    member this.CancelAsyncShouldReturn404() =
+    member __.CancelAsyncShouldReturn404(): Async<unit> =
         async {
             let mockUserServiceManager = Mock<IUserServiceManager>()
             let mockUserServiceRepository = Mock<IUserServiceRepository>()
-            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
             let mockServiceRepository = Mock<IServiceRepository>()
-            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockTotalCalulatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<UserService>>()
             let mockMapper = Mock<IMapper>()
 
             mockUserServiceRepository
@@ -661,7 +628,6 @@ type UserServiceControllerTests() =
                 UserServiceController(
                     mockUserServiceManager.Object,
                     mockUserServiceRepository.Object,
-                    mockServiceCatalogRepository.Object,
                     mockServiceRepository.Object,
                     mockTotalCalulatorStrategyManager.Object,
                     mockPagerStrategyManager.Object,
@@ -677,14 +643,13 @@ type UserServiceControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 409 when user service has the canceled status")>]
-    member this.CancelAsyncShouldReturn409ByCanceledStatus() =
+    member __.CancelAsyncShouldReturn409ByCanceledStatus(): Async<unit> =
         async {
             let mockUserServiceManager = Mock<IUserServiceManager>()
             let mockUserServiceRepository = Mock<IUserServiceRepository>()
-            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
             let mockServiceRepository = Mock<IServiceRepository>()
-            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockTotalCalulatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<UserService>>()
             let mockMapper = Mock<IMapper>()
 
             let dummyUserService = UserService()
@@ -698,7 +663,6 @@ type UserServiceControllerTests() =
                 UserServiceController(
                     mockUserServiceManager.Object,
                     mockUserServiceRepository.Object,
-                    mockServiceCatalogRepository.Object,
                     mockServiceRepository.Object,
                     mockTotalCalulatorStrategyManager.Object,
                     mockPagerStrategyManager.Object,
@@ -714,14 +678,13 @@ type UserServiceControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 409 when user service has the charged status")>]
-    member this.CancelAsyncShouldReturn409ByChargedStatus() =
+    member __.CancelAsyncShouldReturn409ByChargedStatus(): Async<unit> =
         async {
             let mockUserServiceManager = Mock<IUserServiceManager>()
             let mockUserServiceRepository = Mock<IUserServiceRepository>()
-            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
             let mockServiceRepository = Mock<IServiceRepository>()
-            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockTotalCalulatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<UserService>>()
             let mockMapper = Mock<IMapper>()
 
             let dummyUserService = UserService()
@@ -735,7 +698,6 @@ type UserServiceControllerTests() =
                 UserServiceController(
                     mockUserServiceManager.Object,
                     mockUserServiceRepository.Object,
-                    mockServiceCatalogRepository.Object,
                     mockServiceRepository.Object,
                     mockTotalCalulatorStrategyManager.Object,
                     mockPagerStrategyManager.Object,
@@ -751,14 +713,13 @@ type UserServiceControllerTests() =
         }
 
     [<Fact(DisplayName = "Should return 200 when user service is canceled successfully")>]
-    member this.CancelAsyncShouldReturn200() =
+    member __.CancelAsyncShouldReturn200(): Async<unit> =
         async {
             let mockUserServiceManager = Mock<IUserServiceManager>()
             let mockUserServiceRepository = Mock<IUserServiceRepository>()
-            let mockServiceCatalogRepository = Mock<IServiceCatalogRepository>()
             let mockServiceRepository = Mock<IServiceRepository>()
-            let mockTotalCalulatorStrategyManager = Mock<IStrategyManager>()
-            let mockPagerStrategyManager = Mock<IPagerStrategyManager<UserService>>()
+            let mockTotalCalulatorStrategyManager = Mock<ITotalCalculator>()
+            let mockPagerStrategyManager = Mock<IPageable<UserService>>()
             let mockMapper = Mock<IMapper>()
 
             let dummyUserService = UserService()
@@ -775,7 +736,6 @@ type UserServiceControllerTests() =
                 UserServiceController(
                     mockUserServiceManager.Object,
                     mockUserServiceRepository.Object,
-                    mockServiceCatalogRepository.Object,
                     mockServiceRepository.Object,
                     mockTotalCalulatorStrategyManager.Object,
                     mockPagerStrategyManager.Object,

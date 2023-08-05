@@ -9,15 +9,13 @@ open VeterinaryServices.Domain.Models
 
 type ServiceExistFilter(serviceRepository: IServiceRepository) =
 
-    member private this._serviceRepository = serviceRepository
-
     interface IAsyncActionFilter with
 
-        member this.OnActionExecutionAsync(context: ActionExecutingContext, next: ActionExecutionDelegate) =
+        member __.OnActionExecutionAsync(context: ActionExecutingContext, next: ActionExecutionDelegate): Task =
             async {
                 let userService = context.ActionArguments.["userService"] :?> UserService
                 let filter = Builders<Service>.Filter.In((fun e -> e.Id), userService.Services)
-                let! counter = this._serviceRepository.CountAsync filter |> Async.AwaitTask
+                let! counter = serviceRepository.CountAsync filter |> Async.AwaitTask
 
                 if counter <> int64(userService.Services.Length) then
                     let serviceNotFound = {| message = "Service not found" |}
@@ -32,15 +30,13 @@ type ServiceExistAttribute() =
 
 type ServiceExistFromPatchFilter(serviceRepository: IServiceRepository) =
 
-    member private this._serviceRepository = serviceRepository
-
     interface IAsyncActionFilter with
 
-        member this.OnActionExecutionAsync(context: ActionExecutingContext, next: ActionExecutionDelegate) =
+        member __.OnActionExecutionAsync(context: ActionExecutingContext, next: ActionExecutionDelegate): Task =
             async {
                 let patchUserService = context.ActionArguments.["patchUserService"] :?> PatchUserService
                 let filter = Builders<Service>.Filter.In((fun e -> e.Id), patchUserService.Services)
-                let! counter = this._serviceRepository.CountAsync filter |> Async.AwaitTask
+                let! counter = serviceRepository.CountAsync filter |> Async.AwaitTask
 
                 if counter <> int64(patchUserService.Services.Length) then
                     let serviceNotFound = {| message = "Service not found" |}

@@ -12,19 +12,19 @@ type ServiceCatalogManagerTests() =
 
     let uri = Environment.GetEnvironmentVariable("MONGO_DB_URI")
 
-    member private this._mongoClient = MongoClient(uri)
+    member private __.mongoClient = MongoClient(uri)
 
     [<Fact(DisplayName = "Should create, update and delete a document")>]
-    member this.CreateUpdateAndDeleteAsyncShouldCreateUpdateAndDeleteDocument() =
+    member __.CreateUpdateAndDeleteAsyncShouldCreateUpdateAndDeleteDocument(): Async<unit> =
         async {
             let newCatalog = ServiceCatalog()
             newCatalog.Name <- "Test Catalog"
             newCatalog.Description <- "Test description"
 
-            let serviceCatalogManager = ServiceCatalogManager(this._mongoClient) :> IServiceCatalogManager
+            let serviceCatalogManager = ServiceCatalogManager(__.mongoClient) :> IServiceCatalogManager
             do! serviceCatalogManager.CreateAsync(newCatalog) |> Async.AwaitTask
 
-            let serviceCatalogRepository = ServiceCatalogRepository(this._mongoClient) :> IServiceCatalogRepository
+            let serviceCatalogRepository = ServiceCatalogRepository(__.mongoClient) :> IServiceCatalogRepository
             let! catalog =
                 serviceCatalogRepository.GetOneAsync(Builders<ServiceCatalog>.Filter.Eq((fun sc -> sc.Name), "Test Catalog"))
                 |> Async.AwaitTask

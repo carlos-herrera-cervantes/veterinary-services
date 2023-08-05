@@ -9,15 +9,13 @@ open VeterinaryServices.Domain.Models
 
 type CustomerExistFilter(customerRepository: ICustomerRepository) =
 
-    member private this._customerRepository = customerRepository
-
     interface IAsyncActionFilter with
 
-        member this.OnActionExecutionAsync(context: ActionExecutingContext, next: ActionExecutionDelegate) =
+        member __.OnActionExecutionAsync(context: ActionExecutingContext, next: ActionExecutionDelegate): Task =
             async {
                 let userService = context.ActionArguments.["userService"] :?> UserService
                 let filter = Builders<Customer>.Filter.Eq((fun c -> c.Id), userService.CustomerId)
-                let! counter = this._customerRepository.CountAsync filter |> Async.AwaitTask
+                let! counter = customerRepository.CountAsync filter |> Async.AwaitTask
 
                 if counter = int64(0) then
                     let customerNotFound = {| message = "Customer not found" |}

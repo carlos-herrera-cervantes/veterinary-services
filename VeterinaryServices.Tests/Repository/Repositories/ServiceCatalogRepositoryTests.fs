@@ -11,12 +11,12 @@ type ServiceCatalogRepositoryTests() =
 
     let uri = Environment.GetEnvironmentVariable("MONGO_DB_URI")
 
-    member private this._mongoClient = MongoClient(uri)
+    member private __.mongoClient = MongoClient(uri)
 
     [<Fact(DisplayName = "Should return an empty list")>]
-    member this.GetAllAsyncShouldReturnEmptyList() =
+    member __.GetAllAsyncShouldReturnEmptyList(): Async<unit> =
         async {
-            let serviceCatalogRepository = new ServiceCatalogRepository(this._mongoClient) :> IServiceCatalogRepository
+            let serviceCatalogRepository = new ServiceCatalogRepository(__.mongoClient) :> IServiceCatalogRepository
             let! catalogs =
                 serviceCatalogRepository
                     .GetAllAsync(Builders<ServiceCatalog>.Filter.Eq((fun sc -> sc.Name), "dummy"), 0, 10)
@@ -24,9 +24,9 @@ type ServiceCatalogRepositoryTests() =
         }
 
     [<Fact(DisplayName = "Should return null when document does not exist")>]
-    member this.GetOneAsyncShouldReturnNull() =
+    member __.GetOneAsyncShouldReturnNull(): Async<unit> =
         async {
-            let serviceCatalogRepository = new ServiceCatalogRepository(this._mongoClient) :> IServiceCatalogRepository
+            let serviceCatalogRepository = new ServiceCatalogRepository(__.mongoClient) :> IServiceCatalogRepository
             let! catalog =
                 serviceCatalogRepository.GetOneAsync(Builders<ServiceCatalog>.Filter.Eq((fun sc -> sc.Name), "dummy"))
                 |> Async.AwaitTask
@@ -34,9 +34,9 @@ type ServiceCatalogRepositoryTests() =
         }
 
     [<Fact(DisplayName = "Should return 0 documents")>]
-    member this.CountAsyncShouldReturnZeroDocuments() =
+    member __.CountAsyncShouldReturnZeroDocuments(): Async<unit> =
         async {
-            let serviceCatalogRepository = new ServiceCatalogRepository(this._mongoClient) :> IServiceCatalogRepository
+            let serviceCatalogRepository = new ServiceCatalogRepository(__.mongoClient) :> IServiceCatalogRepository
             let! counter =
                 serviceCatalogRepository.CountAsync(Builders<ServiceCatalog>.Filter.Eq((fun sc -> sc.Name), "dummy"))
                 |> Async.AwaitTask

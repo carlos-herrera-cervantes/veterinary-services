@@ -11,12 +11,12 @@ type ServiceRepositoryTests() =
 
     let uri = Environment.GetEnvironmentVariable("MONGO_DB_URI")
 
-    member private this._mongoClient = MongoClient(uri)
+    member private __.mongoClient = MongoClient(uri)
 
     [<Fact(DisplayName = "Should return an empty list")>]
-    member this.GetAllAsyncShouldReturnEmptyList() =
+    member __.GetAllAsyncShouldReturnEmptyList(): Async<unit> =
         async {
-            let serviceRepository = ServiceRepository(this._mongoClient) :> IServiceRepository
+            let serviceRepository = ServiceRepository(__.mongoClient) :> IServiceRepository
             let! services =
                 serviceRepository
                     .GetAllAsync(Builders<Service>.Filter.Eq((fun s -> s.Name), "Hair Cut"), 0, 10)
@@ -24,9 +24,9 @@ type ServiceRepositoryTests() =
         }
 
     [<Fact(DisplayName = "Should return null when document does not exist")>]
-    member this.GetOneAsyncShouldReturnNull() =
+    member __.GetOneAsyncShouldReturnNull(): Async<unit> =
         async {
-            let serviceRepository = ServiceRepository(this._mongoClient) :> IServiceRepository
+            let serviceRepository = ServiceRepository(__.mongoClient) :> IServiceRepository
             let! service =
                 serviceRepository.GetOneAsync(Builders<Service>.Filter.Eq((fun s -> s.Name), "Hair Cut"))
                 |> Async.AwaitTask
@@ -34,9 +34,9 @@ type ServiceRepositoryTests() =
         }
 
     [<Fact(DisplayName = "Should return 0 documents")>]
-    member this.CountAsyncShouldReturnZeroDocuments() =
+    member __.CountAsyncShouldReturnZeroDocuments(): Async<unit> =
         async {
-            let serviceRepository = ServiceRepository(this._mongoClient) :> IServiceRepository
+            let serviceRepository = ServiceRepository(__.mongoClient) :> IServiceRepository
             let! counter =
                 serviceRepository.CountAsync(Builders<Service>.Filter.Eq((fun s -> s.Name), "Hair Cut"))
                 |> Async.AwaitTask

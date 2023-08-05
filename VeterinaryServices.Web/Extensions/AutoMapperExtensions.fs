@@ -8,8 +8,8 @@ module AutoMapperExtensions =
 
     type IServiceCollection with
 
-        member this.AddAutoMapperConfiguration() =
+        member __.AddAutoMapperConfiguration() =
             let mapperConfiguration = MapperConfiguration(fun mc -> mc.AddProfile(AutoMapping()))
             let mapper = mapperConfiguration.CreateMapper()
-            this.AddSingleton(mapper) |> ignore
-            this
+            __.AddSingleton(mapper) |> ignore
+            __

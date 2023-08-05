@@ -22,9 +22,7 @@
     <Compile Include="Controllers\UserServiceControllerTests.fs" />
     <Compile Include="Controllers\ServiceControllerTests.fs" />
     <Compile Include="Services\Calculators\ClassicCalculatorTests.fs" />
-    <Compile Include="Services\Calculators\StrategyManagerTests.fs" />
     <Compile Include="Services\Pagers\PageableTests.fs" />
-    <Compile Include="Services\Pagers\PagerStrategyManagerTests.fs" />
     <Compile Include="Repository\Repositories\UserServiceRepositoryTests.fs" />
     <Compile Include="Repository\Repositories\ServiceCatalogRepositoryTests.fs" />
     <Compile Include="Repository\Repositories\ServiceRepositoryTests.fs" />
